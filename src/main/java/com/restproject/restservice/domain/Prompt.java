@@ -60,10 +60,12 @@ public class Prompt {
         return formattedString;
     }
 
+    //Sets all tags; will write over pre-existing tags
     public void setTags(String tags) {
         this.tags = formatStringToTags(tags);
     }
 
+    //Adds one or more tag to end of tag string, separated by space and comma
     public void addTags(String tags) {
         this.tags += formatStringToTags(tags);
     }
@@ -72,5 +74,15 @@ public class Prompt {
         if(!tag.contains(",") && this.tags.contains(tag)) {
             //TODO: add remove tag logic
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Prompt{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", content='" + content + '\'' +
+                ", tags='" + tags + '\'' +
+                '}';
     }
 }
