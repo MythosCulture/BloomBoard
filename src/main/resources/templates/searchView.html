@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Prompt Search</title>
+</head>
+<body>
+    <table>
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Content</th>
+            <th scope="col">Tags</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="prompt: ${prompts}">
+                <td th:text="${prompt.id}"/>
+                <td th:text="${prompt.name}"/>
+                <td th:text="${prompt.content}"/>
+                <td th:text="${prompt.tags}"/>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

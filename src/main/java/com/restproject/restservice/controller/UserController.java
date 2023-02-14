@@ -3,11 +3,13 @@ package com.restproject.restservice.controller;
 import com.restproject.restservice.domain.User;
 import com.restproject.restservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+//@RestController //doesnt work with thymeleaf
+@Controller
 @RequestMapping("/user")
 public class UserController {
 

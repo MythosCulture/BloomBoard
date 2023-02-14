@@ -21,6 +21,7 @@ public class PromptService {
     public Prompt getPromptById(long id){
         Optional<Prompt> optionalPrompt = promptRepository.findById(id);
 
+        //TODO: Add error handling
         return optionalPrompt.orElseThrow();
     }
 

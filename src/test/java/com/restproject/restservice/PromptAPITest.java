@@ -19,7 +19,7 @@ public class PromptAPITest {
         String content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
                 "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
         String tag1 = "  ipsum             ";
-        String tag2 = "Elves";
+        String tag2 = "Elves,";
         String tag3 = "Family";
         Prompt prompt = new Prompt(name, content, tag1);
 
@@ -40,7 +40,7 @@ public class PromptAPITest {
 
         String tagToFind = "elves";
 
-        List<Prompt> found = promptRepository.findByTagsContainingIgnoreCase(" " + tagToFind +",");
+        List<Prompt> found = promptRepository.findByTagsContainingIgnoreCase(tagToFind +",");
         for(Prompt p: found) {
             System.out.println(p.getTags());
         }
