@@ -1,7 +1,5 @@
-package com.restproject.restservice.service;
+package com.restproject.restservice.prompt;
 
-import com.restproject.restservice.domain.Prompt;
-import com.restproject.restservice.repository.IPromptRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

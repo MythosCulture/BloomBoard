@@ -1,4 +1,4 @@
-package com.restproject.restservice.domain;
+package com.restproject.restservice.prompt;
 
 import lombok.NoArgsConstructor;
 

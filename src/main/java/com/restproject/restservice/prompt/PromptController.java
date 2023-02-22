@@ -1,7 +1,5 @@
-package com.restproject.restservice.controller;
+package com.restproject.restservice.prompt;
 
-import com.restproject.restservice.domain.Prompt;
-import com.restproject.restservice.service.PromptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,16 +14,6 @@ public class PromptController {
 
     @Autowired
     private PromptService promptService;
-
-    @GetMapping("/")
-    public String viewDashboardPage(Model model) {
-        return "Hello World!";
-    }
-    @GetMapping("/prompts")
-    public String viewSearchPage(Model model) {
-        model.addAttribute("prompts", getAllPrompts());
-        return "searchView";
-    }
 
     @GetMapping("/prompt/all")
     public List<Prompt> getAllPrompts() { return promptService.findAllPrompts(); }

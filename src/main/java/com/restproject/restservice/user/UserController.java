@@ -1,12 +1,10 @@
-package com.restproject.restservice.controller;
+package com.restproject.restservice.user;
 
-import com.restproject.restservice.domain.User;
-import com.restproject.restservice.service.UserService;
+import com.restproject.restservice.user.User;
+import com.restproject.restservice.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 //@RestController //doesnt work with thymeleaf
 @Controller
@@ -16,15 +14,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/all")
-    public List<User> getAllUsers() {
-        return userService.findAllUsers();
-    }
+    //@GetMapping("/all")
+    //public List<User> getAllUsers() {
+    //    return userService.findAllUsers();
+    //}
 
-    @GetMapping("/{name}")
-    public List<User> getUsersByName(@PathVariable String name){
-        return userService.findByName(name);
-    }
+    //@GetMapping("/{username}")
+    //public List<User> getUsersByUsername(@PathVariable String username){
+    //    return userService.findByUsername(username);
+    //}
 
     @GetMapping("/{id}")
     public User getUser(@PathVariable long id) {
