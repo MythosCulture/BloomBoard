@@ -1,8 +1,8 @@
-package com.restproject.restservice.security.service;
+package com.bloomboard.promptboard.security.service;
 
-import com.restproject.restservice.security.model.User;
-import com.restproject.restservice.security.model.UserRole;
-import com.restproject.restservice.security.repository.IUserRepository;
+import com.bloomboard.promptboard.security.model.User;
+import com.bloomboard.promptboard.security.model.UserRole;
+import com.bloomboard.promptboard.security.repository.IUserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

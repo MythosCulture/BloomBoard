@@ -1,9 +1,8 @@
-package com.restproject.restservice.prompt;
+package com.bloomboard.promptboard.prompt;
 
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -1,13 +1,13 @@
-package com.restproject.restservice;
+package com.bloomboard.promptboard;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RestServiceApplication {
+public class PromptBoardApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RestServiceApplication.class, args);
+		SpringApplication.run(PromptBoardApplication.class, args);
 	}
 
 }

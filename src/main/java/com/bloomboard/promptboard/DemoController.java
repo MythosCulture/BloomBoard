@@ -1,4 +1,4 @@
-package com.restproject.restservice;
+package com.bloomboard.promptboard;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

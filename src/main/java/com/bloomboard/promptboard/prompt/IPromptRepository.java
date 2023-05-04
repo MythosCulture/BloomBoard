@@ -1,4 +1,4 @@
-package com.restproject.restservice.prompt;
+package com.bloomboard.promptboard.prompt;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

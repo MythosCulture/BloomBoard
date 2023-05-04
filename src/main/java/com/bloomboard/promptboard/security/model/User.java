@@ -1,4 +1,4 @@
-package com.restproject.restservice.security.model;
+package com.bloomboard.promptboard.security.model;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -64,6 +64,11 @@ public class User implements UserDetails {
         return password;
     }
 
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String getUsername() {
         return username;
@@ -71,6 +76,10 @@ public class User implements UserDetails {
 
     public String getUserRole() {
         return userRole.name();
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
     }
 
     @Override

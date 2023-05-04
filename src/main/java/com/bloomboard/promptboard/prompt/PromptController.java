@@ -1,7 +1,6 @@
-package com.restproject.restservice.prompt;
+package com.bloomboard.promptboard.prompt;
 
-import com.restproject.restservice.security.model.RegisterRequest;
-import com.restproject.restservice.security.service.SecurityServiceImpl;
+import com.bloomboard.promptboard.security.service.SecurityServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

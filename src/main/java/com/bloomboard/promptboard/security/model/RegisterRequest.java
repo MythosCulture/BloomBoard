@@ -1,8 +1,7 @@
-package com.restproject.restservice.security.model;
+package com.bloomboard.promptboard.security.model;
 
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 

@@ -1,4 +1,4 @@
-package com.restproject.restservice.security.service;
+package com.bloomboard.promptboard.security.service;
 
 public interface ISecurityService {
     boolean isAuthenticated();

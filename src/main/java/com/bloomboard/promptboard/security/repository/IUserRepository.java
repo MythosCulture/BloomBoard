@@ -1,6 +1,6 @@
-package com.restproject.restservice.security.repository;
+package com.bloomboard.promptboard.security.repository;
 
-import com.restproject.restservice.security.model.User;
+import com.bloomboard.promptboard.security.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

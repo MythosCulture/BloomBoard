@@ -1,9 +1,9 @@
-package com.restproject.restservice;
+package com.bloomboard.promptboard;
 
-import com.restproject.restservice.security.model.RegisterRequest;
-import com.restproject.restservice.security.model.User;
-import com.restproject.restservice.security.repository.IUserRepository;
-import com.restproject.restservice.security.service.UserServiceImpl;
+import com.bloomboard.promptboard.security.model.RegisterRequest;
+import com.bloomboard.promptboard.security.model.User;
+import com.bloomboard.promptboard.security.repository.IUserRepository;
+import com.bloomboard.promptboard.security.service.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;

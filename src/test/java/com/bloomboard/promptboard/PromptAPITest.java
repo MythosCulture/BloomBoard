@@ -1,12 +1,11 @@
-package com.restproject.restservice;
+package com.bloomboard.promptboard;
 
-import com.restproject.restservice.prompt.Prompt;
-import com.restproject.restservice.prompt.IPromptRepository;
+import com.bloomboard.promptboard.prompt.Prompt;
+import com.bloomboard.promptboard.prompt.IPromptRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

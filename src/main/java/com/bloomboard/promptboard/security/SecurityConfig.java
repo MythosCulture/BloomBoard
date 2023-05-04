@@ -1,6 +1,6 @@
-package com.restproject.restservice.security;
+package com.bloomboard.promptboard.security;
 
-import com.restproject.restservice.security.repository.IUserRepository;
+import com.bloomboard.promptboard.security.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

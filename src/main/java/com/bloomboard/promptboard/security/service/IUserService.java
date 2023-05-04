@@ -1,6 +1,6 @@
-package com.restproject.restservice.security.service;
+package com.bloomboard.promptboard.security.service;
 
-import com.restproject.restservice.security.model.User;
+import com.bloomboard.promptboard.security.model.User;
 
 import java.util.Optional;
 

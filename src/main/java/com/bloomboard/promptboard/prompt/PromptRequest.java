@@ -1,4 +1,4 @@
-package com.restproject.restservice.prompt;
+package com.bloomboard.promptboard.prompt;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
