@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+    <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.teal-amber.min.css" />
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+</head>
+<style>
+    .card-template > .mdl-card__actions {
+        display: flex;
+        box-sizing:border-box;
+        align-items: center;
+    }
+</style>
+<body>
+    <div class="container">
+
+        <h1 class="page-title">Log in</h1>
+        <form th:action="@{/login}" th:object="${loginForm}" method="POST" class="form-signin">
+        <div class="card-template mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__supporting-text">
+                <span th:text="${message}" class="message-text" ></span>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="username" name="username" autofocus="true">
+                    <label class="mdl-textfield__label" for="username">Username</label>
+                </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="password" id="password" name="password">
+                    <label class="mdl-textfield__label" for="password">Password</label>
+                </div>
+                <span class="has-error message-text" th:text="${error}"></span>
+
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+                <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" href="/register">
+                    Create Account
+                </a>
+                <div class="mdl-layout-spacer"></div>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" type="submit">
+                    Log in
+                </button>
+            </div>
+        </div>
+        </form>
+
+    </div>
+</body>
+</html>

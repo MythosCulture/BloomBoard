@@ -1,4 +1,4 @@
-package com.restproject.restservice.user;
+package com.restproject.restservice.security.model;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,9 +7,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,12 +41,22 @@ public class User implements UserDetails {
         this.locked = locked;
         this.enabled = enabled;
     }
+    public User(String username,
+                String email,
+                String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.userRole = UserRole.USER;
+        this.locked = false;
+        this.enabled = true;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(
-                new SimpleGrantedAuthority(userRole.name())
-        );
+        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority(userRole.name()));
+        return grantedAuthorities;
     }
 
     @Override
@@ -57,6 +67,10 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return username;
+    }
+
+    public String getUserRole() {
+        return userRole.name();
     }
 
     @Override
@@ -74,11 +88,16 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return enabled;
     }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", userRole=" + userRole +
+                ", locked=" + locked +
+                ", enabled=" + enabled +
                 '}';
     }
 }

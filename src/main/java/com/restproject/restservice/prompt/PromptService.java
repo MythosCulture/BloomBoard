@@ -19,26 +19,28 @@ public class PromptService {
     public Prompt getPromptById(long id){
         Optional<Prompt> optionalPrompt = promptRepository.findById(id);
 
-        //TODO: Add error handling
-        return optionalPrompt.orElseThrow();
+        return optionalPrompt.orElseThrow(IllegalArgumentException::new);
     }
 
-    public Prompt createPrompt (Prompt prompt) {
-        Prompt newPrompt = new Prompt(prompt.getName(), prompt.getContent(), prompt.getTags());
-        return promptRepository.save(newPrompt);
+    public void createPrompt (Prompt prompt) {
+        promptRepository.save(prompt);
     }
 
-    public Prompt updatePrompt (Prompt prompt) {
+    public void updatePrompt (Prompt prompt) {
         Prompt updatedPrompt = getPromptById(prompt.getId());
-        updatedPrompt.setName(prompt.getName());
+        updatedPrompt.setTitle(prompt.getTitle());
         updatedPrompt.setContent(prompt.getContent());
         updatedPrompt.setTags(prompt.getTags());
 
-        return promptRepository.save(updatedPrompt);
+        promptRepository.save(updatedPrompt);
     }
 
     public List<Prompt> findByTag(String tag) {
-        return promptRepository.findByTagsContainingIgnoreCase(" " + tag +",");
+        return promptRepository.findByTagsContainingIgnoreCase(tag);
+    }
+
+    public List<Prompt> findByOwner(String owner) {
+        return promptRepository.findByOwner(owner);
     }
     //TODO: Add searchPhrase method
     //public List<Prompt> searchPhrase(String phrase) {}

@@ -1,0 +1,56 @@
+.announcements {
+    padding: 3em;
+    min-height: 200px;
+    background-color: #B7C6CD;
+}
+.section-header {
+    font-size: 2rem;
+    margin: 0;
+}
+
+.container {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+
+ /* aligns buttons on cards */
+.card-template > .mdl-card__title,
+.card-template > .mdl-card__actions {
+        display: flex;
+        box-sizing:border-box;
+        align-items: center;
+ }
+.flex-cards {
+        display: flex;
+        flex-flow: row wrap;
+    }
+.page-content{
+    margin: 2rem 3rem;
+}
+
+.page-title {
+      color: #006666;
+    }
+.message-text {
+    color: #FF5252;
+}
+
+ /* Style the button that is used to open and close the collapsible content */
+.collapsible {
+  cursor: pointer;
+  padding: 2rem;
+  border: none;
+  text-align: left;
+  outline: none;
+}
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active, .collapsible:hover {
+
+}
+/* Style the collapsible content. Note: hidden by default */
+.collapsible-content {
+  padding: 0 18px;
+  display: block;
+  overflow: hidden;
+}

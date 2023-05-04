@@ -2,14 +2,18 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Prompt Search</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.teal-amber.min.css" />
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 </head>
 <body>
     <table>
         <thead>
         <tr>
             <th scope="col">ID</th>
-            <th scope="col">Name</th>
+            <th scope="col">Title</th>
             <th scope="col">Content</th>
             <th scope="col">Tags</th>
         </tr>
@@ -17,9 +21,13 @@
         <tbody>
             <tr th:each="prompt: ${prompts}">
                 <td th:text="${prompt.id}"/>
-                <td th:text="${prompt.name}"/>
+                <td th:text="${prompt.title}"/>
                 <td th:text="${prompt.content}"/>
                 <td th:text="${prompt.tags}"/>
+                <td th:each="tag: ${prompt.getArrayTags()}">
+                    <span th:text="${tag}">
+                    </span>
+                </td>
             </tr>
         </tbody>
     </table>

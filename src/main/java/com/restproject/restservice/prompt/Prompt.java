@@ -3,6 +3,7 @@ package com.restproject.restservice.prompt;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,14 +15,20 @@ public class Prompt {
     @Id
     @GeneratedValue
     private long id;
-    private String name;
+    private String title;
     private String content;
     private String tags;
+    private String owner;
 
-    public Prompt(String name, String content, String tags) {
-        this.name = name;
+    public Prompt(String title, String content, String tags, String owner) {
+        this.title = title;
         this.content = content;
         setTags(tags);
+        this.owner = owner;
+    }
+
+    public String[] getArrayTags() {
+        return getTags().split(",");
     }
 
     public long getId() {
@@ -29,13 +36,13 @@ public class Prompt {
     }
 
     //Name
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
+    public void setTitle(String title) {
         //TODO: Set upper character limit
-        this.name = name;
+        this.title = title;
     }
 
     //Content
@@ -87,12 +94,18 @@ public class Prompt {
             this.setTags(updatedTags);
         }
     }
+    public String getOwner() {
+        return owner;
+    }
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 
     @Override
     public String toString() {
         return "Prompt{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", name='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", tags='" + tags + '\'' +
                 '}';

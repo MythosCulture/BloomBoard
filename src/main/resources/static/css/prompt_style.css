@@ -1,0 +1,30 @@
+.form{
+    width: 70%;
+    display: block;
+    margin:auto;
+}
+.prompt-form{
+    width:100% !important;
+}
+
+.prompt-textfield{
+    position: relative;
+    padding: 20px 0;
+    width: 100% !important;
+}
+.prompt-submit{
+    float: right;
+    margin-bottom: .75rem;
+}
+.prompt-header{
+    padding: 1.5rem 1.5rem 1.5rem 3rem;
+ }
+.prompt-support-text{
+    display:flex;
+    flex-direction:column;
+    width:80%;
+    margin:auto;
+}
+.prompt-input{
+
+}

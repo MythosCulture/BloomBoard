@@ -1,11 +1,12 @@
 package com.restproject.restservice;
 
-import com.restproject.restservice.domain.Prompt;
-import com.restproject.restservice.repository.IPromptRepository;
+import com.restproject.restservice.prompt.Prompt;
+import com.restproject.restservice.prompt.IPromptRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,14 +16,14 @@ public class PromptAPITest {
 
     private Prompt getPrompt() {
         //name, content, tags optional
-        String name = "GrimDark Fantasy";
+        String name = "Monster Mash";
         String content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
                 "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-        String tag1 = "  ipsum             ";
-        String tag2 = "Elves,";
-        String tag3 = "Family";
-        Prompt prompt = new Prompt(name, content, tag1);
+        String tag1 = "  testTagSpace             ";
+        String tag2 = "Monster";
+        String tag3 = "found family ";
 
+        Prompt prompt = new Prompt(name, content, tag1, "chonk");
         prompt.addTags(tag2);
         prompt.addTags(tag3);
 
@@ -38,15 +39,15 @@ public class PromptAPITest {
         promptRepository.save(prompt);
         System.out.println(prompt.getTags());
 
-        String tagToFind = "elves";
+        String tagToFind = "Monster";
 
-        List<Prompt> found = promptRepository.findByTagsContainingIgnoreCase(tagToFind +",");
+        List<Prompt> found = promptRepository.findByTagsContainingIgnoreCase(tagToFind);
         for(Prompt p: found) {
             System.out.println(p.getTags());
         }
 
         assertFalse(found.isEmpty());
-        assertEquals(prompt.getName(), found.get(0).getName());
+        assertEquals(prompt.getTitle(), found.get(0).getTitle());
     }
 
 }

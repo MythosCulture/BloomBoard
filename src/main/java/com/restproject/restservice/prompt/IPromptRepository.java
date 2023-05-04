@@ -6,8 +6,7 @@ import java.util.List;
 
 public interface IPromptRepository extends JpaRepository<Prompt, Long> {
 
-    List<Prompt> findByName(String name);
-
+    List<Prompt> findByOwner(String owner);
     List<Prompt> findByTagsContaining(String tag);
     List<Prompt> findByTagsContainingIgnoreCase(String tag);
 

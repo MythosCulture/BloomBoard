@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create an account</title>
+  <link th:href="@{/css/main.css}" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.teal-amber.min.css" />
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+</head>
+<style>
+  .container {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+    .card-template > .mdl-card__actions {
+        display: flex;
+        box-sizing:border-box;
+        align-items: center;
+    }
+    .page-title {
+      color: #006666;
+    }
+</style>
+<body>
+  <div class="container">
+
+    <h1 class="page-title">Create an Account</h1>
+    <form method="POST" class="form-signin" th:object="${userForm}" th:action="@{/register}">
+      <div class="card-template mdl-card mdl-shadow--2dp">
+        <div class="mdl-card__supporting-text">
+
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" th:field="*{username}" type="text" id="username" name="username" autofocus="true">
+            <label class="mdl-textfield__label" for="username">Username</label>
+            <span class="has-error message-text" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+          </div>
+
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" th:field="*{email}" type="email" id="email" name="email">
+            <label class="mdl-textfield__label" for="email">Email</label>
+            <span class="has-error message-text" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+          </div>
+
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" th:field="*{password}" type="password" id="password" name="password">
+            <label class="mdl-textfield__label" for="password">Password</label>
+            <span class="has-error message-text" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+          </div>
+
+          <!-- //TODO: add passwordConfirm
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" th:field="*{passwordConfirm}" type="text" id="passwordConfirm" name="passwordConfirm">
+            <label class="mdl-textfield__label" for="passwordConfirm">Confirm Password</label>
+            <span class="has-error" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></span>
+          </div>
+          -->
+
+        </div>
+        <div class="mdl-card__actions mdl-card--border">
+          <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" href="/login">
+            Log in
+          </a>
+          <div class="mdl-layout-spacer"></div>
+          <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" type="submit">
+            Submit
+          </button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</body>
+</html>

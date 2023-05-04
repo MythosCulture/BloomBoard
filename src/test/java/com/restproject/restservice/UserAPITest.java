@@ -1,7 +1,9 @@
 package com.restproject.restservice;
 
-import com.restproject.restservice.domain.User;
-import com.restproject.restservice.repository.IUserRepository;
+import com.restproject.restservice.security.model.RegisterRequest;
+import com.restproject.restservice.security.model.User;
+import com.restproject.restservice.security.repository.IUserRepository;
+import com.restproject.restservice.security.service.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +25,8 @@ public class UserAPITest {
         String rand = nameParts[random.nextInt(nameParts.length)];
         String rand2 = nameParts[random.nextInt(nameParts.length)];
         String rand3 = nameParts[random.nextInt(nameParts.length)];
-
-        User user = new User();
-        user.setName(rand+rand2+rand3);
+        String username = rand+rand2+rand3;
+        User user = new User(username, username+"@gmail.com","password123");
 
         return user;
     }
@@ -35,6 +36,9 @@ public class UserAPITest {
 
     @Autowired
     private IUserRepository userRepository;
+
+    @Autowired
+    private UserServiceImpl userService;
 
     @Test
     public void deleteAll_Test() {
@@ -47,13 +51,42 @@ public class UserAPITest {
     }
 
     @Test
-    public void save_Test() {
+    public void Register_Test() {
         User user = getUser();
-        userRepository.save(user);
 
-        User found = userRepository.findById(user.getId()).orElseThrow();
-        assertEquals(user.getId(), found.getId());
+        RegisterRequest request = new RegisterRequest();
+        request.setUsername(user.getUsername());
+        request.setEmail(user.getEmail());
+        request.setPassword("password123");
+        User newUser = new User(request.getUsername(),request.getEmail(),request.getPassword());
+
+        userService.save(newUser);
+
+        User found = userRepository.findByUsernameIgnoreCase(user.getUsername()).orElseThrow();
+        assertEquals(newUser.getUsername(), found.getUsername());
     }
+
+    /*
+    @Test
+    public void RegisterAndAuthenticate_Test() {
+        User user = getUser();
+
+        RegisterRequest request = new RegisterRequest();
+        request.setUsername(user.getUsername());
+        request.setEmail(user.getEmail());
+        request.setPassword("password123");
+        service.register(request);
+
+        AuthenticationRequest authRequest = new AuthenticationRequest();
+        authRequest.setUsername(user.getUsername());
+        authRequest.setPassword("password123");
+        AuthenticationResponse authToken = service.authenticate(authRequest);
+
+        System.out.println(user.toString());
+        System.out.println(authToken);
+        assertTrue(authToken.getToken() != null);
+    }
+     */
 
     @Test
     public void findAll_Test() {
@@ -64,7 +97,7 @@ public class UserAPITest {
         assertFalse(found.isEmpty());
     }
 
-    @Test
+    /*@Test
     public void findByName_Test() {
         User user = getUser();
         userRepository.save(user);
@@ -72,8 +105,9 @@ public class UserAPITest {
         List<User> found = userRepository.findByName(user.getName());
         assertFalse(found.isEmpty());
         assertEquals(user.getName(), found.get(0).getName());
-    }
+    } */
 
+    /*
     @Test
     public void updateUser_Test(){
         User user = getUser();
@@ -85,7 +119,7 @@ public class UserAPITest {
         User found = userRepository.findById(user.getId()).orElseThrow();
         assertEquals(user.getId(), found.getId());
         assertEquals(user.getName(), found.getName());
-    }
+    } */
 
 
 }

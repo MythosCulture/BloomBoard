@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>New Prompt</title>
+  <link th:href="@{/css/main.css}" rel="stylesheet" />
+  <link th:href="@{/css/prompt_style.css}" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.teal-amber.min.css" />
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+</head>
+<style>
+
+</style>
+<body>
+<div class="mdl-layout mdl-js-layout">
+  <div th:insert="fragments/header :: header">...</div>
+  <main class="mdl-layout__content">
+    <div class="page-content">
+      <!-- Page content goes here -->
+
+      <form th:action="@{/prompts/new}" th:object="${createPromptForm}" method="POST" class="form">
+        <div class="prompt-form mdl-card mdl-shadow--2dp">
+          <h3 class="section-header prompt-header page-title">Create New Prompt</h3>
+          <div class="mdl-card__supporting-text prompt-support-text" style="margin:auto;">
+
+            <!-- Form input fields -->
+            <div class="mdl-js-textfield mdl-textfield--floating-label prompt-textfield prompt-input">
+              <input class="mdl-textfield__input" th:field="*{title}" type="text" id="promptTitle" name="title" autofocus="true">
+              <label class="mdl-textfield__label" for="promptTitle">Title</label>
+              <span class="has-error message-text" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+            </div>
+
+            <div class="mdl-js-textfield mdl-textfield--floating-label prompt-textfield prompt-input">
+              <input class="mdl-textfield__input" th:field="*{tags}" type="text" id="promptTags" name="tags">
+              <label class="mdl-textfield__label" for="promptTags">Tags seperated by commas (I.E. "Horror,Original,Misc...")</label>
+              <span class="has-error message-text" th:if="${#fields.hasErrors('tags')}" th:errors="*{tags}"></span>
+            </div>
+
+            <div class="mdl-textfield mdl-js-textfield prompt-textfield prompt-input">
+              <textarea class="mdl-textfield__input" th:field="*{content}" type="text" rows= "20" id="content" name="content" ></textarea>
+              <label class="mdl-textfield__label" for="content">Prompt content...</label>
+              <span class="has-error message-text" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
+            </div>
+
+          </div>
+          <div class="mdl-card__actions mdl-card--border">
+            <div class="mdl-layout-spacer"></div>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent prompt-submit" type="submit">
+              Submit
+            </button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </main>
+</div>
+</body>
+</html>
