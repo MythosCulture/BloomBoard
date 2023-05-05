@@ -4,7 +4,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 public class PromptRequest {
-
+    Long id;
     @NotEmpty
     @Size(min=4, max=60)
     String title;
@@ -37,6 +37,10 @@ public class PromptRequest {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public Long getId() { return id; }
+
+    public void setId(Long id) { this.id = id; }
 
     @Override
     public String toString() {

@@ -23,7 +23,7 @@
  }
 .flex-cards {
         display: flex;
-        flex-flow: row wrap;
+        flex-flow: row-reverse wrap;
     }
 .page-content{
     margin: 2rem 3rem;

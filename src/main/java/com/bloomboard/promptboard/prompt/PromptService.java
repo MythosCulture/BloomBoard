@@ -1,6 +1,7 @@
 package com.bloomboard.promptboard.prompt;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,8 +27,12 @@ public class PromptService {
         promptRepository.save(prompt);
     }
 
-    public void updatePrompt (Prompt prompt) {
+    public void updatePrompt (PromptRequest prompt, String owner) {
         Prompt updatedPrompt = getPromptById(prompt.getId());
+        if (!updatedPrompt.getOwner().equals(owner)) {
+            throw new AccessDeniedException("You are not authorized to edit this prompt.");
+        }
+
         updatedPrompt.setTitle(prompt.getTitle());
         updatedPrompt.setContent(prompt.getContent());
         updatedPrompt.setTags(prompt.getTags());

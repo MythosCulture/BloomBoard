@@ -23,12 +23,6 @@ public class PromptController {
     private SecurityServiceImpl securityService;
 
 
-    @GetMapping("/")
-    public String viewSearch_MyPrompts(Model model) {
-        model.addAttribute("prompts", promptService.findByOwner(securityService.getAuthenticatedUsername()));
-        return "searchView";
-    }
-
     @GetMapping("/new") //GET
     public String createPrompt (Model model) {
         model.addAttribute("createPromptForm", new PromptRequest());
@@ -53,13 +47,27 @@ public class PromptController {
         return "redirect:/home";
     }
 
+    @PostMapping("/edit")
+    public String updatePrompt (@ModelAttribute("updatePromptForm") @Valid PromptRequest promptRequest, BindingResult bindingResult) {
+        promptService.updatePrompt(promptRequest, securityService.getAuthenticatedUsername());
+
+        return "redirect:/home";
+    }
+
     @GetMapping("/all")
     public String viewSearch_AllPrompts(Model model) {
         model.addAttribute("prompts", promptService.findAllPrompts());
         return "searchView";
     }
 
-    @GetMapping("/prompts/{tag}") //TODO: test/implement
+    @GetMapping("/myprompts/all")
+    public String viewSearch_MyPrompts(Model model) {
+        model.addAttribute("prompts", promptService.findByOwner(securityService.getAuthenticatedUsername()));
+
+        return "searchView";
+    }
+
+    @GetMapping("/{tag}") //TODO: test/implement
     public List<Prompt> getPromptsByTag(@PathVariable String tag) {
        return promptService.findByTag(tag);
     }

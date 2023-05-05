@@ -1,6 +1,6 @@
 package com.bloomboard.promptboard;
 
-import com.bloomboard.promptboard.prompt.Prompt;
+import com.bloomboard.promptboard.prompt.PromptRequest;
 import com.bloomboard.promptboard.prompt.PromptService;
 import com.bloomboard.promptboard.security.model.RegisterRequest;
 import com.bloomboard.promptboard.security.model.User;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Controller //@RestController //doesnt work with thymeleaf
 public class UserController {
@@ -80,8 +79,9 @@ public class UserController {
 
     @GetMapping({"/","/home"})
     public String viewWelcome(Model model) {
-        List<Prompt> newPrompt = promptService.findByOwner(securityService.getAuthenticatedUsername());
+        //List<Prompt> newPrompt = promptService.findByOwner(securityService.getAuthenticatedUsername());
         model.addAttribute("prompts", promptService.findByOwner(securityService.getAuthenticatedUsername()));
+        model.addAttribute("updatePromptForm", new PromptRequest());
 
         return "homeView";
     }
