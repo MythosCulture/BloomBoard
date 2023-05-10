@@ -48,7 +48,7 @@ public class UserController {
         }
 
         if(userService.findByUsernameIgnoreCase(newUser.getUsername()).isPresent()){ //Check for duplicate usernames
-            //add fielderror to bindingresult so that error shows up on form
+            //adds fielderror to bindingresult so that error shows up on form
             FieldError error = new FieldError("userForm","username","An account already exists with that username.");
             bindingResult.addError(error);
             logger.info(bindingResult.toString());
@@ -57,7 +57,6 @@ public class UserController {
         }
 
         userService.save(newUser);
-        //securityService.autoLogin(newUser.getUsername(), newUser.getPassword()); //TODO: autologin doesn't work
         //securityService.autoLogin(newUser.getUsername(), newUser.getPasswordConfirm()); //TODO: add .getPasswordConfirm()
 
         return "redirect:/home"; //TODO: Make /home page

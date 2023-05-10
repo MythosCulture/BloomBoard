@@ -15,10 +15,11 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
+@SequenceGenerator(name = "user_id_seq", allocationSize = 1)
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq")
     private Long id;
     private String username;
     private String email;
@@ -63,8 +64,6 @@ public class User implements UserDetails {
     public String getPassword() {
         return password;
     }
-
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -77,14 +76,15 @@ public class User implements UserDetails {
     public String getUserRole() {
         return userRole.name();
     }
-
     public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
     }
 
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
     @Override
     public boolean isAccountNonExpired() { return true; }
-
     @Override
     public boolean isAccountNonLocked() { return !locked; }
 

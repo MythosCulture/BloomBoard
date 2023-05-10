@@ -36,7 +36,6 @@ public class UserAPITest {
 
     @Autowired
     private IUserRepository userRepository;
-
     @Autowired
     private UserServiceImpl userService;
 
@@ -49,7 +48,6 @@ public class UserAPITest {
         List<User> found = userRepository.findAll();
         assertEquals(0, found.size());
     }
-
     @Test
     public void Register_Test() {
         User user = getUser();

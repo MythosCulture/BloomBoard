@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 public class RegisterRequest{
 
     @NotEmpty
-    @Size(min=5, max=30) //At least 5 characters long
+    @Size(min=5, max=20) //At least 5 characters long
     private String username;
     @NotEmpty
     @Email

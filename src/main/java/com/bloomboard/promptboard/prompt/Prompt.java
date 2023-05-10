@@ -1,33 +1,55 @@
 package com.bloomboard.promptboard.prompt;
 
+import com.bloomboard.promptboard.security.model.User;
+import com.bloomboard.promptboard.tag.Tag;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.HashSet;
+import java.util.Set;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "prompts")
+@SequenceGenerator(name = "prompt_id_seq", allocationSize = 1)
 public class Prompt {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "prompt_id_seq")
     private long id;
     private String title;
     private String content;
-    private String tags;
-    private String owner;
 
-    public Prompt(String title, String content, String tags, String owner) {
+    @ManyToMany
+    @JoinTable(name = "tag_prompt",
+            joinColumns = @JoinColumn(name = "prompt_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> appliedTags = new HashSet<>();
+    @ManyToOne (fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public Prompt(String title, String content, Set<Tag> tags ,User user) {
         this.title = title;
         this.content = content;
-        setTags(tags);
-        this.owner = owner;
+        this.appliedTags = tags;
+        this.user = user;
     }
+    public Set<Tag> getAppliedTags() {
+        return appliedTags;
+    }
+    public void setAppliedTags(Set<Tag> appliedTags) {
+        this.appliedTags = appliedTags;
+    }
+    public void addTag(Tag tag){
+        appliedTags.add(tag);
+    };
 
-    public String[] getArrayTags() {
-        return getTags().split(",");
+    public User getUser() {
+        return user;
+    }
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public long getId() {
@@ -38,7 +60,6 @@ public class Prompt {
     public String getTitle() {
         return title;
     }
-
     public void setTitle(String title) {
         //TODO: Set upper character limit
         this.title = title;
@@ -48,43 +69,12 @@ public class Prompt {
     public String getContent() {
         return content;
     }
-
     public void setContent(String content) {
         this.content = content;
     }
 
-    //Tags
-    public String getTags() {
-        return tags;
-    }
-
-    private String formatTags(String tags) {
-        Pattern whitespaceComma = Pattern.compile("\\s+\\,+\\s+|\\s+\\,");
-        Pattern whitespaceEnds = Pattern.compile("^\\s+|\\s+$");
-        Pattern endCommas = Pattern.compile("\\,+$");
-
-        Matcher matcher = whitespaceComma.matcher(tags);
-        String cleanTags = matcher.replaceAll(",");
-
-        Matcher matcher2 = whitespaceEnds.matcher(cleanTags);
-        cleanTags = matcher2.replaceAll("");
-
-        Matcher matcher3 = endCommas.matcher(cleanTags);
-        if (matcher3.find()) { //replace potential double comma and add comma to end if none exists
-            matcher3.replaceAll(",");
-        } else {
-            cleanTags += ",";
-        }
-
-        return cleanTags;
-    }
-
-    //Sets all tags; will write over pre-existing tags
-    public void setTags(String tags) { this.tags = formatTags(tags); }
-
-    //Adds one or more tag to end of tag string, separated by space and comma
-    public void addTags(String tags) { this.tags += formatTags(tags); }
-
+    //TODO: Unnecessary? Would need to replace deleted methods.
+    /*
     public void removeTag(String tag) {
         String tagToRemove = formatTags(tag);
         if (this.tags.contains(tagToRemove)) {
@@ -93,20 +83,14 @@ public class Prompt {
             this.setTags(updatedTags);
         }
     }
-    public String getOwner() {
-        return owner;
-    }
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
+     */
     @Override
     public String toString() {
         return "Prompt{" +
                 "id=" + id +
                 ", name='" + title + '\'' +
                 ", content='" + content + '\'' +
-                ", tags='" + tags + '\'' +
+                ", tags='" + getAppliedTags() + '\'' +
                 '}';
     }
 }

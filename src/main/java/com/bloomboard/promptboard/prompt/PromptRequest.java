@@ -4,15 +4,16 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 public class PromptRequest {
-    Long id;
+    private Long id;
     @NotEmpty
     @Size(min=4, max=60)
-    String title;
+    private String title;
+
     @NotEmpty
-    String tags;
+    private String tags;
     @NotEmpty
     @Size(min=50, max=7000)
-    String content;
+    private String content;
 
     public String getTitle() {
         return title;
