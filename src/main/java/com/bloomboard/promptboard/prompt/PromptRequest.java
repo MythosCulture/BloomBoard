@@ -8,9 +8,10 @@ public class PromptRequest {
     @NotEmpty
     @Size(min=4, max=60)
     private String title;
-
     @NotEmpty
     private String tags;
+    @Size(max = 255)
+    private String summary;
     @NotEmpty
     @Size(min=50, max=7000)
     private String content;
@@ -18,7 +19,6 @@ public class PromptRequest {
     public String getTitle() {
         return title;
     }
-
     public void setTitle(String title) {
         this.title = title;
     }
@@ -26,21 +26,21 @@ public class PromptRequest {
     public String getTags() {
         return tags;
     }
-
     public void setTags(String tags) {
         this.tags = tags;
     }
 
+    public String getSummary() { return summary; }
+    public void setSummary(String summary) { this.summary = summary; }
+
     public String getContent() {
         return content;
     }
-
     public void setContent(String content) {
         this.content = content;
     }
 
     public Long getId() { return id; }
-
     public void setId(Long id) { this.id = id; }
 
     @Override

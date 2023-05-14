@@ -8,20 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NoResultException;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class UserServiceImpl implements IUserService {
+public class UserServiceImpl {
     @Autowired
     private final IUserRepository userRepository;
-
     @Autowired
     private final BCryptPasswordEncoder passwordEncoder;
 
     //private final static String USER_NOT_FOUND_MSG = "user with email %s not found";
 
-    @Override
     public void save(User user) {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -30,9 +29,11 @@ public class UserServiceImpl implements IUserService {
         userRepository.save(user);
     }
 
-    @Override
-    public Optional<User> findByUsernameIgnoreCase(String username) {
-        return userRepository.findByUsernameIgnoreCase(username);
+    public User findByUsernameIgnoreCase(String username) {
+        Optional<User> optionalUser = userRepository.findByUsernameIgnoreCase(username);
+        return optionalUser.orElseThrow(() -> new NoResultException(
+                String.format("Could not find user %s.", username)
+        ));
     }
 
 }

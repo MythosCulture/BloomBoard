@@ -8,6 +8,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,16 +29,18 @@ public class PromptService {
 
     public Prompt getPromptById(long id){
         Optional<Prompt> optionalPrompt = promptRepository.findById(id);
-
-        return optionalPrompt.orElseThrow(IllegalArgumentException::new);
+        return optionalPrompt.orElseThrow(() -> new NoResultException(
+                String.format("Could not find prompt with id: %s.", id)
+        ));
     }
 
     public void createPrompt (PromptRequest prompt, User user) {
         String[] promptTags = getFormattedTagsString(prompt.getTags());
-        Set<Tag> tagSet = tagService.updateTagRepo(promptTags);
+        Set<Tag> tagSet = tagService.saveNewTags(promptTags);
 
         Prompt newPrompt = new Prompt(
                 prompt.getTitle(),
+                prompt.getSummary(),
                 prompt.getContent(),
                 tagSet,
                 user
@@ -74,23 +77,26 @@ public class PromptService {
 
         updatedPrompt.setTitle(prompt.getTitle());
         updatedPrompt.setContent(prompt.getContent());
+        updatedPrompt.setSummary(prompt.getSummary());
 
         String[] promptTags = getFormattedTagsString(prompt.getTags());
-        Set<Tag> tagSet = tagService.updateTagRepo(promptTags);
-        updatedPrompt.setAppliedTags(tagSet);
+        Set<Tag> tagSet = tagService.saveNewTags(promptTags);
+        updatedPrompt.setTags(tagSet);
 
         promptRepository.save(updatedPrompt);
     }
 
+    /* //TODO: implement tag search on prompts
     public List<Prompt> findByTag(String tag) {
         return promptRepository.findByTagsContainingIgnoreCase(tag);
     }
-    public List<Prompt> findByOwner(String owner) {
-        return promptRepository.findByOwner(owner);
+     */
+    public List<Prompt> findByUser_id (long user_id) {
+        return promptRepository.findByUser_id(user_id);
     }
 
     public void deletePrompt(long id) {
-        Prompt prompt = promptRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Prompt not found with id: " + id));
+        Prompt prompt = getPromptById(id);
         promptRepository.delete(prompt);
     }
     //TODO: Add searchPhrase method

@@ -15,7 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Controller
 @RequestMapping("/prompts")
@@ -46,7 +45,7 @@ public class PromptController {
 
         User user = userService.findByUsernameIgnoreCase(
                 securityService.getAuthenticatedUsername()
-        ).orElseThrow();
+        );
 
         promptService.createPrompt(promptRequest, user);
 
@@ -57,9 +56,19 @@ public class PromptController {
     public String updatePrompt (@ModelAttribute("updatePromptForm") @Valid PromptRequest promptRequest, BindingResult bindingResult) {
         User user = userService.findByUsernameIgnoreCase(
                 securityService.getAuthenticatedUsername()
-        ).orElseThrow();
+        );
 
         promptService.updatePrompt(promptRequest, user);
+
+        return "redirect:/home";
+    }
+    @PostMapping("/delete") //TODO: update homeView to add delete button link
+    public String deletePrompt (@ModelAttribute("updatePromptForm") @Valid PromptRequest promptRequest, BindingResult bindingResult) {
+        User user = userService.findByUsernameIgnoreCase(
+                securityService.getAuthenticatedUsername()
+        );
+
+        promptService.deletePrompt(promptRequest.getId());
 
         return "redirect:/home";
     }
@@ -72,16 +81,22 @@ public class PromptController {
 
     @GetMapping("/myprompts/all")
     public String viewSearch_MyPrompts(Model model) {
-        model.addAttribute("prompts", promptService.findByOwner(securityService.getAuthenticatedUsername()));
+        User user = userService.findByUsernameIgnoreCase(securityService.getAuthenticatedUsername());
+        model.addAttribute(
+                "prompts",
+                promptService.findByUser_id(user.getId())
+        );
 
         return "searchView";
     }
 
     //Searching by tags//
-    @GetMapping("/{tag}") //TODO: test/implement
+    /*
+    @GetMapping("/{tag}") //TODO: implement tag search on prompts
     public List<Prompt> getPromptsByTag(@PathVariable String tag) {
        return promptService.findByTag(tag);
     }
+     */
 
     //Todo: Search by phrase (search tag, name, and content)
     //Todo: update prompt

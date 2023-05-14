@@ -20,16 +20,15 @@ public class TagService {
     }
 
     /* Create new tags in repository if they don't exist. Add everything to tagSet */
-    public Set<Tag> updateTagRepo(String[] tags) {
+    public Set<Tag> saveNewTags(String[] tags) {
         Set<Tag> tagSet = new HashSet<>();
         for(String tag: tags) {
-            Tag tempTag = getTag(tag);
-            if(tempTag == null){
+            if(getTag(tag).getTag() != tag) {
                 Tag newTag = new Tag(tag);
                 createTag(newTag);
                 tagSet.add(newTag);
             } else {
-                tagSet.add(tempTag);
+                tagSet.add(getTag(tag));
             }
         }
         return tagSet;

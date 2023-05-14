@@ -1,5 +1,6 @@
 package com.bloomboard.promptboard;
 
+import com.bloomboard.promptboard.prompt.Prompt;
 import com.bloomboard.promptboard.prompt.PromptRequest;
 import com.bloomboard.promptboard.prompt.PromptService;
 import com.bloomboard.promptboard.security.model.RegisterRequest;
@@ -14,8 +15,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
+import org.thymeleaf.util.StringUtils;
 
+import javax.persistence.NoResultException;
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
 
 @Controller //@RestController //doesnt work with thymeleaf
 public class UserController {
@@ -39,27 +44,27 @@ public class UserController {
     }
     @PostMapping("/register") //POST
     public String register (@ModelAttribute("userForm") @Valid RegisterRequest registerRequest, BindingResult bindingResult) {
-
-        User newUser = new User(registerRequest.getUsername(),registerRequest.getEmail(),registerRequest.getPassword());
-
         if (bindingResult.hasErrors()) {
             logger.info(bindingResult.toString());
             return "registerView";
         }
 
-        if(userService.findByUsernameIgnoreCase(newUser.getUsername()).isPresent()){ //Check for duplicate usernames
-            //adds fielderror to bindingresult so that error shows up on form
-            FieldError error = new FieldError("userForm","username","An account already exists with that username.");
-            bindingResult.addError(error);
-            logger.info(bindingResult.toString());
+        User newUser = new User(registerRequest.getUsername(),registerRequest.getEmail(),registerRequest.getPassword());
+        try {
+            userService.findByUsernameIgnoreCase(newUser.getUsername());
+        } catch (NoResultException e) {
+            userService.save(newUser);
+            //securityService.autoLogin(newUser.getUsername(), newUser.getPasswordConfirm()); //TODO: add .getPasswordConfirm()
 
-            return "registerView";
+            return "redirect:/home"; //TODO: Make /home page
         }
 
-        userService.save(newUser);
-        //securityService.autoLogin(newUser.getUsername(), newUser.getPasswordConfirm()); //TODO: add .getPasswordConfirm()
+        //adds fielderror to bindingresult so that error shows up on form
+        FieldError error = new FieldError("userForm","username","An account already exists with that username.");
+        bindingResult.addError(error);
+        logger.info(bindingResult.toString());
+        return "registerView";
 
-        return "redirect:/home"; //TODO: Make /home page
     }
 
     @GetMapping("/login")
@@ -79,8 +84,25 @@ public class UserController {
     @GetMapping({"/","/home"})
     public String viewWelcome(Model model) {
         //List<Prompt> newPrompt = promptService.findByOwner(securityService.getAuthenticatedUsername());
-        model.addAttribute("prompts", promptService.findByOwner(securityService.getAuthenticatedUsername()));
+        User user = userService.findByUsernameIgnoreCase(securityService.getAuthenticatedUsername());
+        List<Prompt> userPrompts = promptService.findByUser_id(user.getId());
+
+        //set summary to 252 characters of content + "..." if summary is empty
+        //should update database if user edits prompt and saves again
+        for (Prompt prompt : userPrompts) {
+            if (prompt.getSummary() == null || prompt.getSummary().equals("")) {
+                String summary = prompt.getContent().length() < 252 ? prompt.getContent() : prompt.getContent().substring(0,252) + "...";
+                prompt.setSummary(summary);
+
+                //TODO: Remove test logging below
+                logger.info("--------------Testing Prompt Output------------");
+                logger.info(prompt.toString());
+            }
+        }
+
+        model.addAttribute("prompts", userPrompts);
         model.addAttribute("updatePromptForm", new PromptRequest());
+        model.addAttribute("deletePromptForm", new PromptRequest());
 
         return "homeView";
     }

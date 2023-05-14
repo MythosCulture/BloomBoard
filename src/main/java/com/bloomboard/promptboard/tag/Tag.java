@@ -1,6 +1,7 @@
 package com.bloomboard.promptboard.tag;
 
 import com.bloomboard.promptboard.prompt.Prompt;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.NoArgsConstructor;
 import net.minidev.json.annotate.JsonIgnore;
 
@@ -17,9 +18,9 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tag_id_seq")
     private long id;
     private String tag;
-    @JsonIgnore
-    @ManyToMany(mappedBy = "appliedTags") //name needs to correspond w/ name of set in Prompt model
-    private Set<Prompt> appliedPrompts = new HashSet<>();
+    @ManyToMany(mappedBy = "tags") //name needs to correspond w/ name of set in Prompt model
+    @JsonBackReference
+    private Set<Prompt> prompts = new HashSet<>();
 
     public Tag(String tag) {
         this.tag = tag;
@@ -31,8 +32,8 @@ public class Tag {
     public void setTag(String tag) {
         this.tag = tag;
     }
-    public Set<Prompt> getAppliedPrompts() {
-        return appliedPrompts;
+    public Set<Prompt> getPrompts() {
+        return prompts;
     }
 
 

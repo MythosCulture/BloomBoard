@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,8 +18,6 @@ public class SecurityServiceImpl implements ISecurityService{
 
     @Autowired
     private AuthenticationManager authenticationManager;
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService; //TODO: Try UserDetailsService AND UserDetailsServiceImpl
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
 
@@ -41,6 +40,9 @@ public class SecurityServiceImpl implements ISecurityService{
         return authentication.getName();
     }
 
+
+    @Autowired
+    private UserDetailsService userDetailsService;
     @Override
     public void autoLogin(String username, String password) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -58,4 +60,5 @@ public class SecurityServiceImpl implements ISecurityService{
             logger.debug(String.format("Auto login %s successfully!", username));
         }
     }
+
 }

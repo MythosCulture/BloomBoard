@@ -38,6 +38,12 @@
               <span class="has-error message-text" th:if="${#fields.hasErrors('tags')}" th:errors="*{tags}"></span>
             </div>
 
+            <div class="mdl-js-textfield mdl-textfield--floating-label prompt-textfield prompt-input">
+              <input class="mdl-textfield__input" th:field="*{summary}" type="text" id="promptSummary" name="summary">
+              <label class="mdl-textfield__label" for="promptSummary">Summary (optional)...</label>
+              <span class="has-error message-text" th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}"></span>
+            </div>
+
             <div class="mdl-textfield mdl-js-textfield prompt-textfield prompt-input">
               <textarea class="mdl-textfield__input" th:field="*{content}" type="text" rows= "20" id="content" name="content" ></textarea>
               <label class="mdl-textfield__label" for="content">Prompt content...</label>
