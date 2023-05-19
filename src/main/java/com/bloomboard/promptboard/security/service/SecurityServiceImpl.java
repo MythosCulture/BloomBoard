@@ -43,7 +43,7 @@ public class SecurityServiceImpl implements ISecurityService{
 
     @Autowired
     private UserDetailsService userDetailsService;
-    @Override
+    @Override //TODO: autologin
     public void autoLogin(String username, String password) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(

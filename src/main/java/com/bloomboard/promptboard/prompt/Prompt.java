@@ -54,7 +54,7 @@ public class Prompt {
     public void addTag(Tag tag){
         tags.add(tag);
     };
-    public String[] getArrayTags() {
+    public String[] getArrayTags() { //used on html templates
         Set<Tag> tags = this.getTags();
         String[] tagArray = new String[tags.size()];
         int i = 0;
@@ -94,17 +94,6 @@ public class Prompt {
         this.content = content;
     }
 
-    //TODO: Unnecessary? Would need to replace deleted methods.
-    /*
-    public void removeTag(String tag) {
-        String tagToRemove = formatTags(tag);
-        if (this.tags.contains(tagToRemove)) {
-            String currentTags = this.getTags();
-            String updatedTags = currentTags.replace(tagToRemove, "");
-            this.setTags(updatedTags);
-        }
-    }
-     */
     @Override
     public String toString() {
         return "Prompt{" +

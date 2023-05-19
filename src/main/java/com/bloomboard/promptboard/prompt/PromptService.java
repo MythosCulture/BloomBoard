@@ -35,7 +35,7 @@ public class PromptService {
     }
 
     public void createPrompt (PromptRequest prompt, User user) {
-        String[] promptTags = getFormattedTagsString(prompt.getTags());
+        String[] promptTags = tagService.getFormattedTagsString(prompt.getTags());
         Set<Tag> tagSet = tagService.saveNewTags(promptTags);
 
         Prompt newPrompt = new Prompt(
@@ -49,27 +49,7 @@ public class PromptService {
         promptRepository.save(newPrompt);
     }
 
-    public String[] getFormattedTagsString (String tags) {
-        //remove whitespaces around commas
-        Pattern whitespaceComma = Pattern.compile("\\s+\\,+\\s+|\\s+\\,");
-        Matcher matcher = whitespaceComma.matcher(tags);
-        String cleanTags = matcher.replaceAll(",");
-
-        //remove whitespaces at ends of string
-        Pattern whitespaceEnds = Pattern.compile("^\\s+|\\s+$");
-        Matcher matcher2 = whitespaceEnds.matcher(cleanTags);
-        cleanTags = matcher2.replaceAll("");
-
-        //replace potential double comma and add comma to end if none exists
-        Pattern endCommas = Pattern.compile("\\,+$"); //TODO: check if correct
-        Matcher matcher3 = endCommas.matcher(cleanTags);
-        cleanTags = matcher3.find() ? matcher3.replaceAll(",") : cleanTags + ",";
-
-        return cleanTags.split(",");
-    }
-
     public void updatePrompt (PromptRequest prompt, User user) {
-        //TODO: This will need to remove created entries from joined table (?)
         Prompt updatedPrompt = getPromptById(prompt.getId());
         if (!updatedPrompt.getUser().equals(user)) {
             throw new AccessDeniedException("You are not authorized to edit this prompt.");
@@ -79,7 +59,7 @@ public class PromptService {
         updatedPrompt.setContent(prompt.getContent());
         updatedPrompt.setSummary(prompt.getSummary());
 
-        String[] promptTags = getFormattedTagsString(prompt.getTags());
+        String[] promptTags = tagService.getFormattedTagsString(prompt.getTags());
         Set<Tag> tagSet = tagService.saveNewTags(promptTags);
         updatedPrompt.setTags(tagSet);
 
@@ -99,6 +79,7 @@ public class PromptService {
         Prompt prompt = getPromptById(id);
         promptRepository.delete(prompt);
     }
+
     //TODO: Add searchPhrase method
     //public List<Prompt> searchPhrase(String phrase) {}
 }

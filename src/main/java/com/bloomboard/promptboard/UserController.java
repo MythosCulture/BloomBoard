@@ -56,7 +56,7 @@ public class UserController {
             userService.save(newUser);
             //securityService.autoLogin(newUser.getUsername(), newUser.getPasswordConfirm()); //TODO: add .getPasswordConfirm()
 
-            return "redirect:/home"; //TODO: Make /home page
+            return "redirect:/home";
         }
 
         //adds fielderror to bindingresult so that error shows up on form
@@ -93,10 +93,6 @@ public class UserController {
             if (prompt.getSummary() == null || prompt.getSummary().equals("")) {
                 String summary = prompt.getContent().length() < 252 ? prompt.getContent() : prompt.getContent().substring(0,252) + "...";
                 prompt.setSummary(summary);
-
-                //TODO: Remove test logging below
-                logger.info("--------------Testing Prompt Output------------");
-                logger.info(prompt.toString());
             }
         }
 

@@ -62,7 +62,7 @@ public class PromptController {
 
         return "redirect:/home";
     }
-    @PostMapping("/delete") //TODO: update homeView to add delete button link
+    @PostMapping("/delete")
     public String deletePrompt (@ModelAttribute("updatePromptForm") @Valid PromptRequest promptRequest, BindingResult bindingResult) {
         User user = userService.findByUsernameIgnoreCase(
                 securityService.getAuthenticatedUsername()
@@ -97,9 +97,4 @@ public class PromptController {
        return promptService.findByTag(tag);
     }
      */
-
-    //Todo: Search by phrase (search tag, name, and content)
-    //Todo: update prompt
-    //Todo: get tags
-
 }

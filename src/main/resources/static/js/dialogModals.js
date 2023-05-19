@@ -16,16 +16,25 @@ dialog.querySelector('.close-edit').addEventListener('click', function () {
 function editPrompt(prompt) {
     console.log("--Edit Prompt--");
     console.log(prompt);
-    document.getElementById('editPromptId').value = prompt.id;
-    document.getElementById('editPromptTitle').value = prompt.title;
-    document.getElementById('editPromptSummary').value = prompt.summary;
-    document.getElementById('editPromptContent').value = prompt.content;
+
+    setInputValueAndTriggerEvent('editPromptId', prompt.id);
+    setInputValueAndTriggerEvent('editPromptTitle', prompt.title);
+    setInputValueAndTriggerEvent('editPromptSummary', prompt.summary);
+    setInputValueAndTriggerEvent('editPromptContent', prompt.content);
 
     let tagsStr = '';
     prompt.tags.forEach(element => {
         tagsStr += element.tag + ',';
     });
-    document.getElementById('editPromptTags').value = tagsStr;
+    //let tagsStr = prompt.tags.map(element => element.tag).join(',');
+    setInputValueAndTriggerEvent('editPromptTags', tagsStr);
+
+}
+
+function setInputValueAndTriggerEvent(inputId, value) {
+    let input = document.getElementById(inputId);
+    input.value = value;
+    input.dispatchEvent(new Event('input'));
 }
 
 

@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class TagService {
@@ -32,5 +34,24 @@ public class TagService {
             }
         }
         return tagSet;
+    }
+
+    public String[] getFormattedTagsString (String tags) {
+        //remove whitespaces around commas
+        Pattern whitespaceComma = Pattern.compile("\\s*,\\s*(?=\\S|$)");
+        Matcher matcher = whitespaceComma.matcher(tags);
+        String cleanTags = matcher.replaceAll(",");
+
+        //remove whitespaces at ends of string
+        Pattern whitespaceEnds = Pattern.compile("^\\s+|\\s+$");
+        Matcher matcher2 = whitespaceEnds.matcher(cleanTags);
+        cleanTags = matcher2.replaceAll("");
+
+        //replace potential double comma and add comma to end if none exists
+        Pattern endCommas = Pattern.compile(",{2,}|,+$");
+        Matcher matcher3 = endCommas.matcher(cleanTags);
+        cleanTags = matcher3.find() ? matcher3.replaceAll(",") : cleanTags + ",";
+
+        return cleanTags.split(",");
     }
 }

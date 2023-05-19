@@ -30,20 +30,7 @@
         <section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
             <div class="page-content container">
                 <!-- Tab 1 -->
-                <div>
-                    <h2>Announcements</h2>
-                    <p>
-                        This website is under construction! You will find that some functionality is not present
-                        occasionally.
-                        Currently, the following still needs implementation:
-                    </p>
-                    <ul>
-                        <li>Navbar links don't work.</li>
-                        <li>There is no option to chat which means the "my chats" tab will always be empty.</li>
-                        <li>No account settings. (password reset, general account moderation)</li>
-                        <li>Tags lack functionality.</li>
-                    </ul>
-                </div>
+                <div th:insert="fragments/announcements :: announcements">...</div>
             </div>
         </section>
         <section class="mdl-layout__tab-panel" id="fixed-tab-2">
