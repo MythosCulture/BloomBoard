@@ -6,3 +6,4 @@ Scarab RP is a website for collaboratively building stories by way of roleplayin
 ## Usage
 
 To access the application, visit the following URL: [https://scarabrp.herokuapp.com/](https://scarabrp.herokuapp.com/)
+Note: The server may be down occassionally when no one has accessed it. Wait a minute then try again if the page doesn't initally load.
