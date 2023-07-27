@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,28 +35,26 @@
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
             <input class="mdl-textfield__input" th:field="*{username}" type="text" id="username" name="username" autofocus="true">
             <label class="mdl-textfield__label" for="username">Username</label>
-            <span class="has-error message-text" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+            <span class="has-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
           </div>
 
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
             <input class="mdl-textfield__input" th:field="*{email}" type="email" id="email" name="email">
             <label class="mdl-textfield__label" for="email">Email</label>
-            <span class="has-error message-text" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+            <span class="has-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
           </div>
 
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
             <input class="mdl-textfield__input" th:field="*{password}" type="password" id="password" name="password">
             <label class="mdl-textfield__label" for="password">Password</label>
-            <span class="has-error message-text" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+            <span class="has-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
           </div>
 
-          <!-- //TODO: add passwordConfirm
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input class="mdl-textfield__input" th:field="*{passwordConfirm}" type="text" id="passwordConfirm" name="passwordConfirm">
+            <input class="mdl-textfield__input" th:field="*{passwordConfirm}" type="password" id="passwordConfirm" name="passwordConfirm">
             <label class="mdl-textfield__label" for="passwordConfirm">Confirm Password</label>
             <span class="has-error" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></span>
           </div>
-          -->
 
         </div>
         <div class="mdl-card__actions mdl-card--border">

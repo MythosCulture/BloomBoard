@@ -56,36 +56,14 @@ public class UserAPITest {
         request.setUsername(user.getUsername());
         request.setEmail(user.getEmail());
         request.setPassword("password123");
-        User newUser = new User(request.getUsername(),request.getEmail(),request.getPassword());
+        request.setPasswordConfirm("password123");
+        User newUser = new User(request.getUsername(),request.getEmail(),request.getPasswordConfirm());
 
         userService.save(newUser);
 
         User found = userRepository.findByUsernameIgnoreCase(user.getUsername()).orElseThrow();
         assertEquals(newUser.getUsername(), found.getUsername());
     }
-
-    /*
-    @Test
-    public void RegisterAndAuthenticate_Test() {
-        User user = getUser();
-
-        RegisterRequest request = new RegisterRequest();
-        request.setUsername(user.getUsername());
-        request.setEmail(user.getEmail());
-        request.setPassword("password123");
-        service.register(request);
-
-        AuthenticationRequest authRequest = new AuthenticationRequest();
-        authRequest.setUsername(user.getUsername());
-        authRequest.setPassword("password123");
-        AuthenticationResponse authToken = service.authenticate(authRequest);
-
-        System.out.println(user.toString());
-        System.out.println(authToken);
-        assertTrue(authToken.getToken() != null);
-    }
-     */
-
     @Test
     public void findAll_Test() {
         User user = getUser();

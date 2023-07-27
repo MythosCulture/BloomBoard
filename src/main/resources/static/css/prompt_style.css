@@ -29,7 +29,6 @@
 
 }
 
-/* override mdl-dialog width for edit prompt dialog */
-.mdl-dialog{
-    width: 50% !important;
+.summary-format {
+    height: 140px;
 }

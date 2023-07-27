@@ -1,21 +1,62 @@
-//      EDIT PROMPT       //
-var dialog = document.querySelector('#editDialog');
-var showDialogButtons = document.querySelectorAll('.show-dialog-edit');
-if (!dialog.showModal) {
-    dialogPolyfill.registerDialog(dialog);
-}
-showDialogButtons.forEach(function (button) {
-    button.addEventListener('click', function () {
-        dialog.showModal();
-    });
-});
-dialog.querySelector('.close-edit').addEventListener('click', function () {
-    dialog.close();
-});
+//      UTILITY       //
 
+let devMode = true;
+function devTestLog(msg, object) {
+    if (devMode == true) {
+        console.log(msg);
+        console.log(object);
+    }
+}
+
+//These two are used in the HTML
+function createMDLChips(prompt, tagsDiv) {
+    prompt.tags.forEach(element => {
+        var mdlChipTextSpan = document.createElement("span");
+        mdlChipTextSpan.classList.add("mdl-chip__text");
+        mdlChipTextSpan.textContent = element.tag;
+
+        var mdlChipSpan = document.createElement("span");
+        mdlChipSpan.classList.add("mdl-chip");
+        mdlChipSpan.appendChild(mdlChipTextSpan);
+
+        tagsDiv.appendChild(mdlChipSpan);
+    })
+}
+function setUpDialogButtons(dialogId, openModalClass, closeModalClass) {
+    var dialog = document.querySelector('#'+ dialogId);
+    var showDialogButtons = document.querySelectorAll('.' + openModalClass);
+
+    if (!dialog.showModal) {
+        dialogPolyfill.registerDialog(dialog);
+    }
+    showDialogButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            dialog.close();
+            dialog.showModal();
+        });
+    });
+    dialog.querySelector('.' + closeModalClass).addEventListener('click', function () {
+        dialog.close();
+    });
+}
+
+//      READ MORE       //
+function readMorePrompt(prompt) {
+    //devTestLog("--Read More Prompt--",prompt); //dev
+
+    document.getElementById('readMorePromptTitle').textContent = prompt.title;
+    document.getElementById('readMorePromptSummary').textContent = prompt.summary;
+    document.getElementById('readMorePromptContent').textContent = prompt.content;
+
+    var tagsDiv = document.getElementById('readMorePromptTags');
+    tagsDiv.innerHTML = ''; //clear existing elements
+
+    createMDLChips(prompt,tagsDiv);
+}
+
+//      EDIT PROMPT       //
 function editPrompt(prompt) {
-    console.log("--Edit Prompt--");
-    console.log(prompt);
+    //devTestLog("--Edit Prompt--",prompt); //dev
 
     setInputValueAndTriggerEvent('editPromptId', prompt.id);
     setInputValueAndTriggerEvent('editPromptTitle', prompt.title);
@@ -37,25 +78,11 @@ function setInputValueAndTriggerEvent(inputId, value) {
     input.dispatchEvent(new Event('input'));
 }
 
-
 //      DELETE PROMPT     //
-var deleteDialog = document.querySelector('#deleteDialog');
-var showDialogButtons = document.querySelectorAll('.show-dialog-delete');
-if (!deleteDialog.showModal) {
-    dialogPolyfill.registerDialog(deleteDialog);
-}
-showDialogButtons.forEach(function (button) {
-    button.addEventListener('click', function () {
-        deleteDialog.showModal();
-    });
-});
-deleteDialog.querySelector('.close-delete').addEventListener('click', function () {
-    deleteDialog.close();
-});
 
 function deletePrompt(prompt) {
-    console.log("--Delete Prompt--");
-    console.log(prompt);
+    //devTestLog("--Delete Prompt--",prompt); //dev
+
     document.getElementById('deletePromptId').value = prompt.id;
     document.getElementById('deletePromptTitle').textContent = prompt.title;
     document.getElementById('deletePromptSummary').textContent = prompt.summary;
@@ -64,16 +91,5 @@ function deletePrompt(prompt) {
     var tagsDiv = document.getElementById('deletePromptTags');
     tagsDiv.innerHTML = ''; //clear existing elements
 
-    //const tagsArray = prompt.tags;
-    prompt.tags.forEach(element => {
-        var mdlChipTextSpan = document.createElement("span");
-        mdlChipTextSpan.classList.add("mdl-chip__text");
-        mdlChipTextSpan.textContent = element.tag;
-
-        var mdlChipSpan = document.createElement("span");
-        mdlChipSpan.classList.add("mdl-chip");
-        mdlChipSpan.appendChild(mdlChipTextSpan);
-
-        tagsDiv.appendChild(mdlChipSpan);
-    })
+    createMDLChips(prompt,tagsDiv);
 }

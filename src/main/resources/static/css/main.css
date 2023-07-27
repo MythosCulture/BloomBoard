@@ -25,20 +25,56 @@
         display: flex;
         flex-flow: row-reverse wrap;
     }
+.grid-container {
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+ .grid-item {
+    padding: 10px;
+ }
+ .grid-header{
+    grid-column: 1/5;
+ }
+
 .page-content{
     margin: 2rem 3rem;
 }
-
 .page-title {
       color: #006666;
     }
-.message-text {
+.has-error {
     color: #FF5252;
 }
+.prompt-card{
+    height: 300px;
+}
 
+/* MDL OVERRIDE */
+.mdl-chip{
+    background-color: #ffd740 !important;
+    margin-left: .25rem !important;
+}
+.mdl-button{
+    min-width: 36px !important;
+}
+/* MDL DIALOG */
+/* override mdl-dialog width for edit prompt dialog */
+.mdl-dialog{
+    width: 50% !important;
+}
 .mdl-dialog__title {
     margin-bottom: 2rem;
 }
 .dialog-label {
     padding-left: 1rem;
+}
+
+/* SEARCHVIEW TABLE */
+
+.search-table-header {
+    text-align: center !important;
+    font-size: 1.5em !important;
+}
+.search-table-row:hover{
+    background-color: #e0f0db !important;
 }

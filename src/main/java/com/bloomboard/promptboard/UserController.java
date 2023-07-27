@@ -20,6 +20,7 @@ import org.thymeleaf.util.StringUtils;
 import javax.persistence.NoResultException;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller //@RestController //doesnt work with thymeleaf
@@ -44,24 +45,29 @@ public class UserController {
     }
     @PostMapping("/register") //POST
     public String register (@ModelAttribute("userForm") @Valid RegisterRequest registerRequest, BindingResult bindingResult) {
+        if (!Objects.equals(registerRequest.getPassword(), registerRequest.getPasswordConfirm())) {
+            //adds fielderror to bindingresult so that error shows up on form
+            FieldError passwordError = new FieldError("userForm", "passwordConfirm", "password doesn't match.");
+            bindingResult.addError(passwordError);
+        }
+
+        //Form errors should be added before this line//
         if (bindingResult.hasErrors()) {
             logger.info(bindingResult.toString());
             return "registerView";
         }
 
-        User newUser = new User(registerRequest.getUsername(),registerRequest.getEmail(),registerRequest.getPassword());
+        User newUser = new User(registerRequest.getUsername(),registerRequest.getEmail(),registerRequest.getPasswordConfirm());
         try {
             userService.findByUsernameIgnoreCase(newUser.getUsername());
         } catch (NoResultException e) {
             userService.save(newUser);
-            //securityService.autoLogin(newUser.getUsername(), newUser.getPasswordConfirm()); //TODO: add .getPasswordConfirm()
-
+            //securityService.autoLogin(newUser.getUsername(), newUser.getPasswordConfirm()); //TODO: add autologin
             return "redirect:/home";
         }
-
-        //adds fielderror to bindingresult so that error shows up on form
         FieldError error = new FieldError("userForm","username","An account already exists with that username.");
         bindingResult.addError(error);
+
         logger.info(bindingResult.toString());
         return "registerView";
 
@@ -83,12 +89,12 @@ public class UserController {
 
     @GetMapping({"/","/home"})
     public String viewWelcome(Model model) {
-        //List<Prompt> newPrompt = promptService.findByOwner(securityService.getAuthenticatedUsername());
         User user = userService.findByUsernameIgnoreCase(securityService.getAuthenticatedUsername());
         List<Prompt> userPrompts = promptService.findByUser_id(user.getId());
 
+        //also used in /prompts/all
         //set summary to 252 characters of content + "..." if summary is empty
-        //should update database if user edits prompt and saves again
+        //will update database if user edits prompt and saves again, this is intended function
         for (Prompt prompt : userPrompts) {
             if (prompt.getSummary() == null || prompt.getSummary().equals("")) {
                 String summary = prompt.getContent().length() < 252 ? prompt.getContent() : prompt.getContent().substring(0,252) + "...";

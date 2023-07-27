@@ -23,7 +23,7 @@
         <form th:action="@{/login}" th:object="${loginForm}" method="POST" class="form-signin">
         <div class="card-template mdl-card mdl-shadow--2dp">
             <div class="mdl-card__supporting-text">
-                <span th:text="${message}" class="message-text" ></span>
+                <span th:text="${message}" class="has-error" ></span>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input class="mdl-textfield__input" type="text" id="username" name="username" autofocus="true">
                     <label class="mdl-textfield__label" for="username">Username</label>
@@ -33,7 +33,7 @@
                     <input class="mdl-textfield__input" type="password" id="password" name="password">
                     <label class="mdl-textfield__label" for="password">Password</label>
                 </div>
-                <span class="has-error message-text" th:text="${error}"></span>
+                <span class="has-error" th:text="${error}"></span>
 
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </div>
