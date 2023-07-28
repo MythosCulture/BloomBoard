@@ -66,11 +66,6 @@ public class PromptService {
         promptRepository.save(updatedPrompt);
     }
 
-    /* //TODO: implement tag search on prompts
-    public List<Prompt> findByTag(String tag) {
-        return promptRepository.findByTagsContainingIgnoreCase(tag);
-    }
-     */
     public List<Prompt> findByUser_id (long user_id) {
         return promptRepository.findByUser_id(user_id);
     }
@@ -80,6 +75,12 @@ public class PromptService {
         promptRepository.delete(prompt);
     }
 
-    //TODO: Add searchPhrase method
-    //public List<Prompt> searchPhrase(String phrase) {}
+    public List<Prompt> searchByPhrase(String phrase) {
+        return promptRepository.findByPhrase(phrase.trim().toLowerCase());
+    }
+    public List<Prompt> searchByTags(List<String> tags) {
+        //Set all tags to lowercase before searching to prevent case mismatching
+        tags.replaceAll(String::toLowerCase);
+        return promptRepository.findByTagsIn(tags);
+    }
 }

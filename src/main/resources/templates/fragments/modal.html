@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/main.css}" rel="stylesheet"/>
+    <link th:href="@{/css/prompt_style.css}" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.teal-amber.min.css"/>
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+</head>
+<body>
+    <dialog th:fragment="readMoreModal" class="mdl-dialog" id="readMoreDialog">
+        <!-- -->
+        <h4 class="mdl-dialog__title" id="readMorePromptTitle">...</h4>
+        <div class="card-template mdl-shadow--2dp">
+            <div class="mdl-card__actions mdl-card--border" id="readMorePromptTags"></div>
+
+            <label for="readMorePromptSummary" class="dialog-label">Summary:</label>
+            <div class="mdl-card__supporting-text mdl-card--border" id="readMorePromptSummary"></div>
+
+            <label for="readMorePromptContent" class="dialog-label">Content:</label>
+            <div class="mdl-card__supporting-text">
+                <span class="mdl-card__supporting-text" id="readMorePromptContent">Content...</span>
+            </div>
+        </div>
+        <div class="mdl-dialog__actions">
+            <div class="mdl-layout-spacer"></div>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored close-readMore">
+                Close
+            </button>
+        </div>
+    </dialog>
+
+    <dialog th:fragment="editModal" class="mdl-dialog" id="editDialog">
+        <form th:action="@{/prompts/edit}" th:object="${updatePromptForm}" method="POST" class="form">
+            <h4 class="mdl-dialog__title">Edit Prompt</h4>
+            <div class="mdl-dialog__content">
+                <input th:field="*{id}" type="text" name="id" id="editPromptId" hidden/>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label prompt-textfield">
+                    <input class="mdl-textfield__input" th:field="*{title}" type="text" id="editPromptTitle" name="title">
+                    <label class="mdl-textfield__label" for="editPromptTitle">Title...</label>
+                    <span class="has-error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label prompt-textfield">
+                    <input class="mdl-textfield__input" th:field="*{tags}" type="text" id="editPromptTags" name="tags">
+                    <label class="mdl-textfield__label" for="editPromptTags">Tags...</label>
+                    <span class="has-error" th:if="${#fields.hasErrors('tags')}" th:errors="*{tags}"></span>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label prompt-textfield">
+                    <input class="mdl-textfield__input" th:field="*{summary}" type="text" id="editPromptSummary" name="summary">
+                    <label class="mdl-textfield__label" for="editPromptSummary">Summary...</label>
+                    <span class="has-error" th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}"></span>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label prompt-textfield">
+                        <textarea class="mdl-textfield__input" th:field="*{content}" type="text" id="editPromptContent" name="content"
+                                  rows="20"></textarea>
+                    <label class="mdl-textfield__label" for="editPromptContent">Content...</label>
+                    <span class="has-error" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
+                </div>
+            </div>
+            <div class="mdl-dialog__actions">
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                    Submit
+                </button>
+                <div class="mdl-layout-spacer"></div>
+                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored close-edit">
+                    Close
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog th:fragment="deleteModal" class="mdl-dialog" id="deleteDialog">
+        <form th:action="@{/prompts/delete}" th:object="${deletePromptForm}" method="POST" class="form">
+            <h4 class="mdl-dialog__title" style="margin-bottom: 2rem">Delete this prompt?</h4>
+            <input th:field="*{id}" type="text" name="id" id="deletePromptId" hidden/>
+            <div class="card-template mdl-shadow--2dp">
+                <div class="mdl-card__title mdl-card--expand">
+                    <b><span id="deletePromptTitle" class="mdl-card__title-text"></span></b>
+                </div>
+                <div class="mdl-card__actions mdl-card--border" id="deletePromptTags"></div>
+
+                <label for="deletePromptSummary" class="dialog-label">Summary:</label>
+                <div class="mdl-card__supporting-text mdl-card--border" id="deletePromptSummary"></div>
+
+                <label for="deletePromptContent" class="dialog-label">Content:</label>
+                <div class="mdl-card__supporting-text">
+                    <span class="mdl-card__supporting-text" id="deletePromptContent">Content...</span>
+                </div>
+            </div>
+            <div class="mdl-dialog__actions">
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                    Delete
+                </button>
+                <div class="mdl-layout-spacer"></div>
+                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored close-delete">
+                    Close
+                </button>
+            </div>
+        </form>
+    </dialog>
+</body>
+</html>

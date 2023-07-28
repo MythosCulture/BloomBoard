@@ -16,6 +16,9 @@ public class RegisterRequest{
     @NotEmpty
     @Size(min=8, max=32) //At least 8 characters long
     private String password;
+    @NotEmpty
+    @Size(min=8, max=32) //At least 8 characters long
+    private String passwordConfirm;
 
     public String getUsername() {
         return username;
@@ -41,9 +44,13 @@ public class RegisterRequest{
         this.password = password;
     }
 
+    public String getPasswordConfirm() { return passwordConfirm; }
+
+    public void setPasswordConfirm(String passwordConfirm) { this.passwordConfirm = passwordConfirm; }
+
     @Override
     public String toString() {
-        return "RegisterRequestModel [name=" + username + ", email=" + email + ", password=" + password + "]";
+        return "RegisterRequestModel [name=" + username + ", email=" + email + ", password=" + passwordConfirm + "]";
     }
 }
 

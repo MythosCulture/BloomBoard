@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Home</title>
+    <title>ScarabRP - Home</title>
     <link th:href="@{/css/main.css}" rel="stylesheet"/>
     <link th:href="@{/css/prompt_style.css}" rel="stylesheet"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -17,7 +17,9 @@
 
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-tabs">
     <div th:insert="fragments/header :: header">...</div>
-    <header class="mdl-layout__header">
+
+    <!--display: block; is temporary fix for header disappearing on mobile. Will need to resize for phones-->
+    <header class="mdl-layout__header" style="display: block;">
         <!-- Tabs -->
         <div class="mdl-layout__tab-bar mdl-js-ripple-effect" style="background-color:#0F625A">
             <a href="#fixed-tab-1" class="mdl-layout__tab is-active">Announcements</a>
@@ -31,22 +33,28 @@
             <div class="page-content container">
                 <!-- Tab 1 -->
                 <div th:insert="fragments/announcements :: announcements">...</div>
+                <span sec:authorize="hasAuthority('ADMIN')">
+                    This account has the admin role.
+                </span>
             </div>
         </section>
         <section class="mdl-layout__tab-panel" id="fixed-tab-2">
-            <a style="margin:10px 50px;"
-                    th:href="@{/prompts/new}" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-                Create Prompt <i class="material-icons">add</i>
-            </a>
-            <div class="page-content flex-cards">
+            <div class="page-content grid-container">
                 <!-- Tab 2 -->
-                <div th:each="prompt: ${prompts}" class="mdl-cell mdl-cell--4-col">
-                    <div class="card-template mdl-card mdl-shadow--2dp" th:id="prompt + ${prompt.id}">
+                <div class="grid-item grid-header">
+                    <a style="margin:10px 50px;"
+                       th:href="@{/prompts/new}" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                        Create Prompt <i class="material-icons">add</i>
+                    </a>
+                </div>
+                <div th:each="prompt: ${prompts}" class="grid-item">
+                    <div class="card-template mdl-card mdl-shadow--2dp prompt-card" th:id="prompt + ${prompt.id}">
                         <div class="mdl-card__title mdl-card--expand">
                             <h2 th:text="${prompt.title}" class="mdl-card__title-text"></h2>
                             <div class="mdl-layout-spacer"></div>
                             <button th:id="promptoptions- + ${prompt.id}"
-                                    class="mdl-button mdl-js-button mdl-button--icon">
+                                    class="mdl-button mdl-js-button mdl-button--icon"
+                                    th:if="${#authentication.principal.username == prompt.user.username}">
                                 <i class="material-icons">more_vert</i>
                             </button>
                             <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
@@ -61,14 +69,15 @@
                                         </span>
                         </div>
                         <!-- First 255 characters of prompt.content if prompt.summary is null -->
-                        <div th:text="${prompt.summary}" class="mdl-card__supporting-text"></div>
+                        <div th:text="${prompt.summary}" class="mdl-card__supporting-text summary-format"></div>
                         <div class="mdl-card__actions mdl-card--border">
                             <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
                                 Button!
                             </a>
                             <div class="mdl-layout-spacer"></div>
                             read more
-                            <button class="mdl-button mdl-js-button mdl-button--icon">
+                            <button class="mdl-button mdl-js-button mdl-button--icon show-dialog-readMore"
+                                    th:onclick="readMorePrompt([[${prompt}]])">
                                 <i class="material-icons">output</i>
                             </button>
                         </div>
@@ -79,83 +88,25 @@
         <section class="mdl-layout__tab-panel" id="fixed-tab-3">
             <div class="page-content">
                 <!-- Tab 3 -->
-                Your chats go here!
+                <div th:insert="fragments/underConstruction :: wip">...</div>
             </div>
         </section>
 
-        <!-- Modal for editing prompt -->
-        <dialog class="mdl-dialog" id="editDialog">
-            <form th:action="@{/prompts/edit}" th:object="${updatePromptForm}" method="POST" class="form">
-                <h4 class="mdl-dialog__title">Edit Prompt</h4>
-                <div class="mdl-dialog__content">
-                    <input th:field="*{id}" type="text" name="id" id="editPromptId" hidden/>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label prompt-textfield">
-                        <input class="mdl-textfield__input" th:field="*{title}" type="text" id="editPromptTitle" name="title">
-                        <label class="mdl-textfield__label" for="editPromptTitle">Title...</label>
-                        <span class="has-error message-text" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
-                    </div>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label prompt-textfield">
-                        <input class="mdl-textfield__input" th:field="*{tags}" type="text" id="editPromptTags" name="tags">
-                        <label class="mdl-textfield__label" for="editPromptTags">Tags...</label>
-                        <span class="has-error message-text" th:if="${#fields.hasErrors('tags')}" th:errors="*{tags}"></span>
-                    </div>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label prompt-textfield">
-                        <input class="mdl-textfield__input" th:field="*{summary}" type="text" id="editPromptSummary" name="summary">
-                        <label class="mdl-textfield__label" for="editPromptSummary">Summary...</label>
-                        <span class="has-error message-text" th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}"></span>
-                    </div>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label prompt-textfield">
-                        <textarea class="mdl-textfield__input" th:field="*{content}" type="text" id="editPromptContent" name="content"
-                                  rows="20"></textarea>
-                        <label class="mdl-textfield__label" for="editPromptContent">Content...</label>
-                        <span class="has-error message-text" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
-                    </div>
-                </div>
-                <div class="mdl-dialog__actions">
-                    <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-                        Submit
-                    </button>
-                    <div class="mdl-layout-spacer"></div>
-                    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored close-edit">
-                        Close
-                    </button>
-                </div>
-            </form>
-        </dialog>
+        <!-- Read more prompt modal -->
+        <div th:insert="fragments/modal :: readMoreModal">...</div>
+
+        <!-- Edit prompt modal -->
+        <div th:insert="fragments/modal :: editModal">...</div>
 
         <!-- Delete prompt modal -->
-        <dialog class="mdl-dialog" id="deleteDialog">
-            <form th:action="@{/prompts/delete}" th:object="${deletePromptForm}" method="POST" class="form">
-                <h4 class="mdl-dialog__title" style="margin-bottom: 2rem">Delete this prompt?</h4>
-                <input th:field="*{id}" type="text" name="id" id="deletePromptId" hidden/>
-                <div class="card-template mdl-shadow--2dp">
-                    <div class="mdl-card__title mdl-card--expand">
-                        <b><span id="deletePromptTitle" class="mdl-card__title-text"></span></b>
-                    </div>
-                    <div class="mdl-card__actions mdl-card--border" id="deletePromptTags"></div>
-
-                    <label for="deletePromptSummary" class="dialog-label">Summary:</label>
-                    <div class="mdl-card__supporting-text mdl-card--border" id="deletePromptSummary"></div>
-
-                    <label for="deletePromptContent" class="dialog-label">Content:</label>
-                    <div class="mdl-card__supporting-text">
-                        <span class="mdl-card__supporting-text" id="deletePromptContent">Content...</span>
-                    </div>
-                </div>
-                <div class="mdl-dialog__actions">
-                    <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-                        Delete
-                    </button>
-                    <div class="mdl-layout-spacer"></div>
-                    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored close-delete">
-                        Close
-                    </button>
-                </div>
-            </form>
-        </dialog>
+        <div th:insert="fragments/modal :: deleteModal">...</div>
     </main>
 </div>
-
 <script th:src="@{/js/dialogModals.js}" type="text/javascript"></script>
+<script>
+    setUpDialogButtons('readMoreDialog','show-dialog-readMore','close-readMore');
+    setUpDialogButtons('editDialog', 'show-dialog-edit', 'close-edit');
+    setUpDialogButtons('deleteDialog', 'show-dialog-delete', 'close-delete');
+</script>
 </body>
 </html>
