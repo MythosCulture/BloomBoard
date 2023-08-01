@@ -38,4 +38,7 @@ public class UserServiceImpl {
         ));
     }
 
+    public List<User> findByUserRole(UserRole userRole) {
+        return userRepository.findByUserRole(userRole);
+    }
 }
