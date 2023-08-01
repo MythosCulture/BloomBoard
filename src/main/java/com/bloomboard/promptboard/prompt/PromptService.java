@@ -3,6 +3,8 @@ package com.bloomboard.promptboard.prompt;
 import com.bloomboard.promptboard.security.model.User;
 import com.bloomboard.promptboard.tag.Tag;
 import com.bloomboard.promptboard.tag.TagService;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -13,12 +15,13 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class PromptService {
 
     @Autowired
-    private IPromptRepository promptRepository;
+    private final IPromptRepository promptRepository;
     @Autowired
-    private TagService tagService;
+    private final TagService tagService;
 
     public List<Prompt> findAllPrompts(){
         return promptRepository.findAll();

@@ -1,5 +1,7 @@
 package com.bloomboard.promptboard.security.service;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +16,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class SecurityServiceImpl implements ISecurityService{
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
 
@@ -42,7 +45,7 @@ public class SecurityServiceImpl implements ISecurityService{
 
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
     @Override //TODO: autologin
     public void autoLogin(String username, String password) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
