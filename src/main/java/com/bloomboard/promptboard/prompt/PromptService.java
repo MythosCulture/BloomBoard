@@ -7,13 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class PromptService {
@@ -43,7 +40,8 @@ public class PromptService {
                 prompt.getSummary(),
                 prompt.getContent(),
                 tagSet,
-                user
+                user,
+                prompt.getSubmissionDate()
         );
 
         promptRepository.save(newPrompt);
@@ -58,6 +56,7 @@ public class PromptService {
         updatedPrompt.setTitle(prompt.getTitle());
         updatedPrompt.setContent(prompt.getContent());
         updatedPrompt.setSummary(prompt.getSummary());
+        updatedPrompt.setLastModified(prompt.getSubmissionDate());
 
         String[] promptTags = tagService.getFormattedTagsString(prompt.getTags());
         Set<Tag> tagSet = tagService.saveNewTags(promptTags);

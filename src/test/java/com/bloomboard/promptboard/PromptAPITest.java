@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +32,8 @@ public class PromptAPITest {
 
     private Prompt getPrompt() {
         //name, content, tags optional
-        String name = "Monster Mash";
+        String title = "Monster Mash";
+        String summary = "Greetings from the other side...";
         String content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
                 "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
         String tag1 = "  testTagSpace             ";
@@ -42,7 +44,7 @@ public class PromptAPITest {
         Set<Tag> tags = tagService.saveNewTags(promptTags);
         User user = userService.findByUsernameIgnoreCase("chonk");
 
-        return new Prompt(name, content, tags, user);
+        return new Prompt(title, summary, content, tags, user, OffsetDateTime.now());
     }
     @Test
     public void deletePromptTest() {

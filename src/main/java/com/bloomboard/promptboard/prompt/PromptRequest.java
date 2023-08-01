@@ -2,6 +2,7 @@ package com.bloomboard.promptboard.prompt;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.time.OffsetDateTime;
 
 public class PromptRequest {
     private Long id;
@@ -15,6 +16,9 @@ public class PromptRequest {
     @NotEmpty
     @Size(min=50, max=7000)
     private String content;
+    //passed to createdAt and/or lastModified
+    @NotEmpty
+    private OffsetDateTime submissionDate;
 
     public String getTitle() {
         return title;
@@ -39,6 +43,9 @@ public class PromptRequest {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public OffsetDateTime getSubmissionDate() { return submissionDate; }
+    public void setSubmissionDate(String date) { this.submissionDate = OffsetDateTime.parse(date);}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
