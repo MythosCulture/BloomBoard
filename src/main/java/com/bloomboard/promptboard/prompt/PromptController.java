@@ -25,7 +25,7 @@ import java.util.List;
 @RequestMapping("/prompts")
 public class PromptController {
 
-    Logger logger = LoggerFactory.getLogger(PromptController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PromptController.class);
     @Autowired
     private final PromptService promptService;
     @Autowired

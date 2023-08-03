@@ -20,7 +20,7 @@
     <div class="page-content">
       <!-- Page content goes here -->
 
-      <form th:action="@{/prompts/new}" th:object="${createPromptForm}" method="POST" class="form">
+      <form id="createPromptForm" th:action="@{/prompts/new}" th:object="${createPromptForm}" method="POST" class="form">
         <div class="prompt-form mdl-card mdl-shadow--2dp">
           <h3 class="section-header prompt-header page-title">Create New Prompt</h3>
           <div class="mdl-card__supporting-text prompt-support-text" style="margin:auto;">

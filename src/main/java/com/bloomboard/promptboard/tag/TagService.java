@@ -13,7 +13,7 @@ public class TagService {
     @Autowired
     private ITagRepository tagRepository;
 
-    public Tag getTag(String tag) {
+    public Tag findTag(String tag) {
        return tagRepository.findByTagIgnoreCase(tag);
     }
 

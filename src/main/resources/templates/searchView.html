@@ -34,7 +34,7 @@
     <form th:action="@{/prompts/browse}" th:object="${searchPromptForm}" method="POST" class="form">
         <div class="mdl-button mdl-js-button mdl-js-ripple-effect" style="color: #000" disabled>
             <i class="material-icons">filter_alt</i>
-            Filter by...
+            Filter...
         </div>
         <div class="mdl-textfield mdl-js-textfield">
             <input class="mdl-textfield__input" th:field="*{tags}" type="text" id="searchByTags" name="searchByTags">

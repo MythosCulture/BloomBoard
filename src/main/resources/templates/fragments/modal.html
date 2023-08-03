@@ -43,7 +43,7 @@
     </dialog>
 
     <dialog th:fragment="editModal" class="mdl-dialog" id="editDialog">
-        <form th:action="@{/prompts/edit}" th:object="${updatePromptForm}" method="POST" class="form">
+        <form id="updatePromptForm" th:action="@{/prompts/edit}" th:object="${updatePromptForm}" method="POST" class="form">
             <h4 class="mdl-dialog__title">Edit Prompt</h4>
             <div class="mdl-dialog__content">
                 <input th:field="*{id}" type="text" name="id" id="editPromptId" hidden/>
@@ -84,7 +84,7 @@
     </dialog>
 
     <dialog th:fragment="deleteModal" class="mdl-dialog" id="deleteDialog">
-        <form th:action="@{/prompts/delete}" th:object="${deletePromptForm}" method="POST" class="form">
+        <form id="deletePromptForm" th:action="@{/prompts/delete}" th:object="${deletePromptForm}" method="POST" class="form">
             <h4 class="mdl-dialog__title" style="margin-bottom: 2rem">Delete this prompt?</h4>
             <input th:field="*{id}" type="text" name="id" id="deletePromptId" hidden/>
             <div class="timestamp-flexbox">
