@@ -5,6 +5,8 @@ import com.bloomboard.promptboard.tag.Tag;
 import com.bloomboard.promptboard.tag.TagService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class PromptService {
 
+    private static final Logger logger = LoggerFactory.getLogger(PromptService.class);
     @Autowired
     private final IPromptRepository promptRepository;
     @Autowired
