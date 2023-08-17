@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,16 +25,26 @@ public class TagService {
         tagRepository.save(tag);
     }
 
+    public List<Tag> findOrphanedTags() { return tagRepository.findOrphanedTags(); }
+    public void deleteOrphanedTags() {
+        List<Tag> orphanedTags = findOrphanedTags();
+        if (!orphanedTags.isEmpty()) {
+            logger.info("Deleted Orphaned Tags: " + orphanedTags);
+            for (Tag tag: orphanedTags) tagRepository.delete(tag);
+        }
+    }
+
     /* Create new tags in repository if they don't exist. Add everything to tagSet */
     public Set<Tag> saveNewTags(String[] tags) {
         Set<Tag> tagSet = new HashSet<>();
         for(String tag: tags) {
-            if(getTag(tag).getTag() != tag) {
+            Tag existingTag = findTag(tag);
+            if(existingTag == null) {
                 Tag newTag = new Tag(tag);
                 createTag(newTag);
                 tagSet.add(newTag);
             } else {
-                tagSet.add(getTag(tag));
+                tagSet.add(existingTag);
             }
         }
         return tagSet;
