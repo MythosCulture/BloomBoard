@@ -20,6 +20,6 @@ public interface IPromptRepository extends JpaRepository<Prompt, Long> {
      */
     @Query("SELECT p FROM Prompt p LEFT JOIN p.tags t WHERE LOWER(t.tag) IN :tags")
     List<Prompt> findByTagsIn(@Param("tags") List<String> tags);
-    List<Prompt> findByUser_id(long user_id);
+    List<Prompt> findByUserId(long userId);
 
 }

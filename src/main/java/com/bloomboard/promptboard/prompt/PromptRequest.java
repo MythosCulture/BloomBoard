@@ -2,7 +2,6 @@ package com.bloomboard.promptboard.prompt;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.time.OffsetDateTime;
 
 public class PromptRequest {
     private Long id;
@@ -18,7 +17,7 @@ public class PromptRequest {
     private String content;
     //passed to createdAt and/or lastModified
     @NotEmpty
-    private OffsetDateTime submissionDate;
+    private String submissionDate;
 
     public String getTitle() {
         return title;
@@ -44,14 +43,21 @@ public class PromptRequest {
         this.content = content;
     }
 
-    public OffsetDateTime getSubmissionDate() { return submissionDate; }
-    public void setSubmissionDate(String date) { this.submissionDate = OffsetDateTime.parse(date);}
+    public String getSubmissionDate() { return submissionDate; }
+    public void setSubmissionDate(String date) {this.submissionDate = date;}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     @Override
     public String toString() {
-        return "PromptRequestModel [title=" + title + ", tags=" + tags + ", content=" + content + "]";
+        return "PromptRequest{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", tags='" + tags + '\'' +
+                ", summary='" + summary + '\'' +
+                ", content='" + content + '\'' +
+                ", submissionDate='" + submissionDate + '\'' +
+                '}';
     }
 }

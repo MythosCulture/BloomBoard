@@ -55,7 +55,6 @@ public class UserController {
 
         //Form errors should be added before this line//
         if (bindingResult.hasErrors()) {
-            logger.info(bindingResult.toString());
             return "registerView";
         }
 
@@ -78,6 +77,7 @@ public class UserController {
     @GetMapping("/login")
     public String login(Model model, String error, String logout) {
         if (securityService.isAuthenticated()) {
+            logger.info("User Login Authenticated: " + securityService.getAuthenticatedUsername());
             return "redirect:/";
         } else {
             if (error != null)

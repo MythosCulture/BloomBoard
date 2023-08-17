@@ -18,7 +18,7 @@
         <div class="mdl-layout-spacer"></div>
         <button th:id="promptoptions- + ${prompt.id}"
                 class="mdl-button mdl-js-button mdl-button--icon"
-                th:if="${#authentication.principal.username == prompt.user.username}">
+                th:if="${#authentication.principal.id == prompt.userId}">
           <i class="material-icons">more_vert</i>
         </button>
         <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"

@@ -44,7 +44,7 @@ public class PromptAPITest {
         Set<Tag> tags = tagService.saveNewTags(promptTags);
         User user = userService.findByUsernameIgnoreCase("chonk");
 
-        return new Prompt(title, summary, content, tags, user, OffsetDateTime.now());
+        return new Prompt(title, summary, content, tags, user.getId(), OffsetDateTime.now());
     }
     @Test
     public void deletePromptTest() {

@@ -3,7 +3,6 @@ package com.bloomboard.promptboard.prompt;
 import com.bloomboard.promptboard.security.model.User;
 import com.bloomboard.promptboard.tag.Tag;
 import com.bloomboard.promptboard.tag.TagService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +11,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -46,8 +46,8 @@ public class PromptService {
                 prompt.getSummary(),
                 prompt.getContent(),
                 tagSet,
-                user,
-                prompt.getSubmissionDate()
+                user.getId(),
+                OffsetDateTime.parse(prompt.getSubmissionDate())
         );
 
         promptRepository.save(newPrompt);
@@ -55,14 +55,14 @@ public class PromptService {
 
     public void updatePrompt (PromptRequest prompt, User user) {
         Prompt updatedPrompt = getPromptById(prompt.getId());
-        if (!updatedPrompt.getUser().equals(user)) {
+        if (!updatedPrompt.getUserId().equals(user.getId())) {
             throw new AccessDeniedException("You are not authorized to edit this prompt.");
         }
 
         updatedPrompt.setTitle(prompt.getTitle());
         updatedPrompt.setContent(prompt.getContent());
         updatedPrompt.setSummary(prompt.getSummary());
-        updatedPrompt.setLastModified(prompt.getSubmissionDate());
+        updatedPrompt.setLastModified(OffsetDateTime.parse(prompt.getSubmissionDate()));
 
         String[] promptTags = tagService.getFormattedTagsString(prompt.getTags());
         Set<Tag> tagSet = tagService.saveNewTags(promptTags);
@@ -72,7 +72,7 @@ public class PromptService {
     }
 
     public List<Prompt> findByUser_id (long user_id) {
-        return promptRepository.findByUser_id(user_id);
+        return promptRepository.findByUserId(user_id);
     }
 
     public void deletePrompt(long id) {

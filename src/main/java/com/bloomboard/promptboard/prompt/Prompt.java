@@ -34,16 +34,15 @@ public class Prompt {
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     @JsonManagedReference
     private Set<Tag> tags = new HashSet<>();
-    @ManyToOne (fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
-    public Prompt(String title, String summary, String content, Set<Tag> tags ,User user, OffsetDateTime createdAt) {
+    public Prompt(String title, String summary, String content, Set<Tag> tags , Long userId, OffsetDateTime createdAt) {
         this.title = title;
         this.summary = summary;
         this.content = content;
         this.tags = tags;
-        this.user = user;
+        this.userId = userId;
         this.createdAt = createdAt;
         this.lastModified = createdAt;
         this.isActive = true;
@@ -66,11 +65,11 @@ public class Prompt {
         }
         return tagArray;
     }
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public long getId() {
