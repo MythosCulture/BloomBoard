@@ -26,9 +26,6 @@
 
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-tabs">
     <div th:insert="fragments/header :: header">...</div>
-
-    <p>This page is under construction...</p>
-
     <!-- SEARCH FORM -->
     <div class="filter_bar">
     <form th:action="@{/prompts/browse}" th:object="${searchPromptForm}" method="POST" class="form">
