@@ -20,15 +20,16 @@
     <div class="page-content">
       <!-- Page content goes here -->
 
-      <form th:action="@{/prompts/new}" th:object="${createPromptForm}" method="POST" class="form">
+      <form id="createPromptForm" th:action="@{/prompts/new}" th:object="${createPromptForm}" method="POST" class="form">
         <div class="prompt-form mdl-card mdl-shadow--2dp">
           <h3 class="section-header prompt-header page-title">Create New Prompt</h3>
           <div class="mdl-card__supporting-text prompt-support-text" style="margin:auto;">
 
+            <input type="text" name="submissionDate" id="createPromptSubmissionDate" hidden/>
             <!-- Form input fields -->
             <div class="mdl-js-textfield mdl-textfield--floating-label prompt-textfield prompt-input">
               <input class="mdl-textfield__input" th:field="*{title}" type="text" id="promptTitle" name="title" autofocus="true">
-              <label class="mdl-textfield__label" for="promptTitle">Title</label>
+              <label class="mdl-textfield__label" for="promptTitle">Title...</label>
               <span class="has-error message-text" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
             </div>
 
@@ -53,13 +54,18 @@
           </div>
           <div class="mdl-card__actions mdl-card--border">
             <div class="mdl-layout-spacer"></div>
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent prompt-submit" type="submit">
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent prompt-submit"
+                    type="button" th:onclick="submitFormWithDate('createPromptForm','createPromptSubmissionDate')">
               Submit
             </button>
           </div>
         </div>
       </form>
 
+      <script th:src="@{/js/dialogModals.js}" type="text/javascript"></script>
+      <script>
+
+      </script>
     </div>
   </main>
 </div>

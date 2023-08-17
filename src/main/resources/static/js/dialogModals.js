@@ -8,6 +8,42 @@ function devTestLog(msg, object) {
     }
 }
 
+function setUpTimestamps() {
+    let cardTimestamps = document.getElementsByClassName('lastModified-value');
+
+    for (let i = 0; i < cardTimestamps.length; i++) {
+        const element = cardTimestamps[i];
+        element.textContent = getTimestamp(element.textContent);
+    }
+
+}
+
+function getTimestamp(date) {
+    const lastModified = new Date(date);
+    const currentTime = new Date();
+
+    const timeDifference = currentTime.getTime() - lastModified.getTime();
+    const secondsDifference = Math.floor(timeDifference / 1000);
+
+    if (secondsDifference < 60) {
+        return secondsDifference === 1 ? "1 second ago" : secondsDifference + " seconds ago";
+    } else if (secondsDifference < 3600) {
+        const minutesDifference = Math.floor(secondsDifference / 60);
+        return minutesDifference === 1 ? "1 minute ago" : minutesDifference + " minutes ago";
+    } else if (secondsDifference < 86400) {
+        const hoursDifference = Math.floor(secondsDifference / 3600);
+        return hoursDifference === 1 ? "1 hour ago" : hoursDifference + " hours ago";
+    } else if (secondsDifference < 604800) {
+        const daysDifference = Math.floor(secondsDifference / 86400);
+        return daysDifference === 1 ? "1 day ago" : daysDifference + " days ago";
+    } else if (secondsDifference < 2592000) {
+        const weeksDifference = Math.floor(secondsDifference / 604800);
+        return weeksDifference === 1 ? "1 week ago" : weeksDifference + " weeks ago";
+    } else {
+        return "1 month ago";
+    }
+}
+
 //These two are used in the HTML
 function createMDLChips(prompt, tagsDiv) {
     prompt.tags.forEach(element => {
@@ -47,11 +83,20 @@ function readMorePrompt(prompt) {
     document.getElementById('readMorePromptTitle').textContent = prompt.title;
     document.getElementById('readMorePromptSummary').textContent = prompt.summary;
     document.getElementById('readMorePromptContent').textContent = prompt.content;
+    document.getElementById('readMoreCreatedAt').textContent = prompt.createdAt;
+    document.getElementById('readMoreLastModified').textContent = getTimestamp(prompt.lastModified);
 
     var tagsDiv = document.getElementById('readMorePromptTags');
     tagsDiv.innerHTML = ''; //clear existing elements
 
     createMDLChips(prompt,tagsDiv);
+}
+//
+function submitFormWithDate(form,elementId) {
+    //enter user's current date/time into hidden input "submissionDate" field right before submitting
+    const submissionDate = new Date(Date.now());
+    setInputValueAndTriggerEvent(elementId, submissionDate.toISOString());
+    document.forms[form].submit(); //need to manually submit
 }
 
 //      EDIT PROMPT       //
@@ -67,7 +112,7 @@ function editPrompt(prompt) {
     prompt.tags.forEach(element => {
         tagsStr += element.tag + ',';
     });
-    //let tagsStr = prompt.tags.map(element => element.tag).join(',');
+    
     setInputValueAndTriggerEvent('editPromptTags', tagsStr);
 
 }
@@ -87,6 +132,8 @@ function deletePrompt(prompt) {
     document.getElementById('deletePromptTitle').textContent = prompt.title;
     document.getElementById('deletePromptSummary').textContent = prompt.summary;
     document.getElementById('deletePromptContent').textContent = prompt.content;
+    document.getElementById('deletePromptCreatedAt').textContent = prompt.createdAt;
+    document.getElementById('deletePromptLastModified').textContent = getTimestamp(prompt.lastModified);
 
     var tagsDiv = document.getElementById('deletePromptTags');
     tagsDiv.innerHTML = ''; //clear existing elements

@@ -36,5 +36,12 @@ public class Tag {
         return prompts;
     }
 
-
+    @Override
+    public String toString() {
+        return "Tag{" +
+                "id=" + id +
+                ", tag='" + tag + '\'' +
+                ", prompts=" + prompts +
+                '}';
+    }
 }

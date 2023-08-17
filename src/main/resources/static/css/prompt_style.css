@@ -28,6 +28,19 @@
 .prompt-input{
 
 }
+.timestamp-flexbox{
+    padding-left:16px;
+    padding-right:25px;
+    display:flex;
+    justify-content: space-between;
+}
+.lastModified-span{
+   color:rgba(0, 150, 136, 100);
+}
+.subtitle-span{
+    font-size: 12px;
+}
+
 
 .summary-format {
     height: 140px;

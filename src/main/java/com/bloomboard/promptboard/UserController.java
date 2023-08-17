@@ -7,6 +7,7 @@ import com.bloomboard.promptboard.security.model.RegisterRequest;
 import com.bloomboard.promptboard.security.model.User;
 import com.bloomboard.promptboard.security.service.SecurityServiceImpl;
 import com.bloomboard.promptboard.security.service.UserServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,15 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Controller //@RestController //doesnt work with thymeleaf
+@RequiredArgsConstructor
 public class UserController {
-    Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
-    private UserServiceImpl userService;
+    private final UserServiceImpl userService;
     @Autowired
-    private SecurityServiceImpl securityService;
+    private final SecurityServiceImpl securityService;
     @Autowired
-    private PromptService promptService;
+    private final PromptService promptService;
 
     @GetMapping("/register") //GET
     public String register (Model model) {
@@ -53,7 +55,6 @@ public class UserController {
 
         //Form errors should be added before this line//
         if (bindingResult.hasErrors()) {
-            logger.info(bindingResult.toString());
             return "registerView";
         }
 
@@ -76,6 +77,7 @@ public class UserController {
     @GetMapping("/login")
     public String login(Model model, String error, String logout) {
         if (securityService.isAuthenticated()) {
+            logger.info("User Login Authenticated: " + securityService.getAuthenticatedUsername());
             return "redirect:/";
         } else {
             if (error != null)

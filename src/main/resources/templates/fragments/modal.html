@@ -13,6 +13,16 @@
     <dialog th:fragment="readMoreModal" class="mdl-dialog" id="readMoreDialog">
         <!-- -->
         <h4 class="mdl-dialog__title" id="readMorePromptTitle">...</h4>
+        <div class="timestamp-flexbox">
+            <div>
+                <span class="subtitle-span">Created:</span>
+                <span class="subtitle-span lastModified-span" type="text" name="createdAt" id="readMoreCreatedAt">...</span>
+            </div>
+            <div>
+                <span class="subtitle-span">Last Modified:</span>
+                <span class="subtitle-span lastModified-span" type="text" name="lastModified" id="readMoreLastModified">...</span>
+            </div>
+        </div>
         <div class="card-template mdl-shadow--2dp">
             <div class="mdl-card__actions mdl-card--border" id="readMorePromptTags"></div>
 
@@ -33,10 +43,11 @@
     </dialog>
 
     <dialog th:fragment="editModal" class="mdl-dialog" id="editDialog">
-        <form th:action="@{/prompts/edit}" th:object="${updatePromptForm}" method="POST" class="form">
+        <form id="updatePromptForm" th:action="@{/prompts/edit}" th:object="${updatePromptForm}" method="POST" class="form">
             <h4 class="mdl-dialog__title">Edit Prompt</h4>
             <div class="mdl-dialog__content">
                 <input th:field="*{id}" type="text" name="id" id="editPromptId" hidden/>
+                <input type="text" name="submissionDate" id="editPromptSubmissionDate" hidden/>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label prompt-textfield">
                     <input class="mdl-textfield__input" th:field="*{title}" type="text" id="editPromptTitle" name="title">
                     <label class="mdl-textfield__label" for="editPromptTitle">Title...</label>
@@ -60,7 +71,8 @@
                 </div>
             </div>
             <div class="mdl-dialog__actions">
-                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+                        type="button" th:onclick="submitFormWithDate('updatePromptForm','editPromptSubmissionDate')">
                     Submit
                 </button>
                 <div class="mdl-layout-spacer"></div>
@@ -72,9 +84,19 @@
     </dialog>
 
     <dialog th:fragment="deleteModal" class="mdl-dialog" id="deleteDialog">
-        <form th:action="@{/prompts/delete}" th:object="${deletePromptForm}" method="POST" class="form">
+        <form id="deletePromptForm" th:action="@{/prompts/delete}" th:object="${deletePromptForm}" method="POST" class="form">
             <h4 class="mdl-dialog__title" style="margin-bottom: 2rem">Delete this prompt?</h4>
             <input th:field="*{id}" type="text" name="id" id="deletePromptId" hidden/>
+            <div class="timestamp-flexbox">
+                <div>
+                    <span class="subtitle-span">Created:</span>
+                    <span class="subtitle-span lastModified-span" type="text" name="createdAt" id="deletePromptCreatedAt">...</span>
+                </div>
+                <div>
+                    <span class="subtitle-span">Last Modified:</span>
+                    <span class="subtitle-span lastModified-span" type="text" name="lastModified" id="deletePromptLastModified">...</span>
+                </div>
+            </div>
             <div class="card-template mdl-shadow--2dp">
                 <div class="mdl-card__title mdl-card--expand">
                     <b><span id="deletePromptTitle" class="mdl-card__title-text"></span></b>

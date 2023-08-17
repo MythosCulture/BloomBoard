@@ -2,6 +2,7 @@ package com.bloomboard.promptboard.security;
 
 import com.bloomboard.promptboard.security.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -50,6 +51,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Autowired
     private final IUserRepository repository;
     @Bean
     public UserDetailsService userDetailsService() {

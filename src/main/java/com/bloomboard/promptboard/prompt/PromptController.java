@@ -5,6 +5,8 @@ import com.bloomboard.promptboard.security.service.SecurityServiceImpl;
 import com.bloomboard.promptboard.security.service.UserServiceImpl;
 import com.bloomboard.promptboard.tag.TagService;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,18 +21,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/prompts")
 public class PromptController {
 
-    Logger logger = LoggerFactory.getLogger(PromptController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PromptController.class);
     @Autowired
-    private PromptService promptService;
+    private final PromptService promptService;
     @Autowired
-    private TagService tagService;
+    private final TagService tagService;
     @Autowired
-    private SecurityServiceImpl securityService;
+    private final SecurityServiceImpl securityService;
     @Autowired
-    private UserServiceImpl userService;
+    private final UserServiceImpl userService;
 
 
     @GetMapping("/new") //GET
