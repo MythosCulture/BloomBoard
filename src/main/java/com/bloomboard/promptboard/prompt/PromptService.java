@@ -51,6 +51,7 @@ public class PromptService {
         );
 
         promptRepository.save(newPrompt);
+        logMessage(newPrompt,String.format("created by user[%d]", user.getId()));
     }
 
     public void updatePrompt (PromptRequest prompt, User user) {
@@ -69,6 +70,7 @@ public class PromptService {
         updatedPrompt.setTags(tagSet);
 
         promptRepository.save(updatedPrompt);
+        logMessage(updatedPrompt,String.format("updated by user[%d]", user.getId()));
     }
 
     public List<Prompt> findByUser_id (long user_id) {
@@ -87,5 +89,11 @@ public class PromptService {
         //Set all tags to lowercase before searching to prevent case mismatching
         tags.replaceAll(String::toLowerCase);
         return promptRepository.findByTagsIn(tags);
+    }
+
+    private void logMessage(Prompt prompt, String msg){
+        String logMessage = String.format("Prompt[%d]: %s | %s",
+                prompt.getId(), msg, prompt.toString());
+        logger.info(logMessage);
     }
 }

@@ -39,9 +39,9 @@ public class Tag {
     @Override
     public String toString() {
         return "Tag{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", tag='" + tag + '\'' +
-                ", prompts=" + prompts +
+                ", prompts='" + (prompts == null ? "[]" : prompts.size()) + '\'' + //handle lazy loading
                 '}';
     }
 }

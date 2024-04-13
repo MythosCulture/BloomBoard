@@ -104,10 +104,13 @@ public class Prompt {
     public String toString() {
         return "Prompt{" +
                 "id=" + id +
-                ", name='" + title + '\'' +
+                ", userId=" + userId +
+                ", createdAt='" + getCreatedAt() + '\'' +
+                ", lastModified='" + getLastModified() + '\'' +
+                ", isActive='" + isActive() + '\'' +
+                ", title='" + title + '\'' +
                 ", summary='" + summary + '\'' +
-                ", content='" + content + '\'' +
-                ", tags='" + getTags() + '\'' +
+                ", tags='" + (tags == null ? "[]" : tags.size()) + '\'' + //handle lazy loading
                 '}';
     }
 }
