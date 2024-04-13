@@ -41,7 +41,7 @@ public class DatabaseCleanupService {
             List<Prompt> demoPrompts = promptService.findByUser_id(demoUser.getId());
             if(!demoPrompts.isEmpty()) {
                 for (Prompt prompt: demoPrompts) {
-                    promptService.deletePrompt(prompt.getId());
+                    promptService.deletePrompt(prompt.getId(), demoUser);
                 }
                 logger.info("\tDeleted " + demoPrompts.size() + " prompts from the DemoUser account.");
                 logger.info("\tDeleted Prompts: \n\t\t" + demoPrompts);

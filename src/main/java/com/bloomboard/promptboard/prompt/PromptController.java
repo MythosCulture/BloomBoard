@@ -132,6 +132,7 @@ public class PromptController {
             searchedPrompts = ByPhrase;
         } else {
             for (Prompt prompt : ByPhrase) {
+                //adds prompt to searchedPrompts only if its on both lists
                 if (ByTags.contains(prompt)) {
                     searchedPrompts.add(prompt);
                 }

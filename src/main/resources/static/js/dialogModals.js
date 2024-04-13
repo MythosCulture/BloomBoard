@@ -36,11 +36,9 @@ function getTimestamp(date) {
     } else if (secondsDifference < 604800) {
         const daysDifference = Math.floor(secondsDifference / 86400);
         return daysDifference === 1 ? "1 day ago" : daysDifference + " days ago";
-    } else if (secondsDifference < 2592000) {
-        const weeksDifference = Math.floor(secondsDifference / 604800);
-        return weeksDifference === 1 ? "1 week ago" : weeksDifference + " weeks ago";
-    } else {
-        return "1 month ago";
+    } else if (secondsDifference < 31536000) { // 365 days in a year, skips months in favor of day count
+        const yearsDifference = Math.floor(secondsDifference / 31536000);
+        return yearsDifference === 1 ? "1 year ago" : yearsDifference + " years ago";
     }
 }
 

@@ -73,13 +73,33 @@ public class PromptService {
         logMessage(updatedPrompt,String.format("updated by user[%d]", user.getId()));
     }
 
-    public List<Prompt> findByUser_id (long user_id) {
+    public List<Prompt> findByUser_id (Long user_id) {
         return promptRepository.findByUserId(user_id);
     }
 
-    public void deletePrompt(long id) {
-        Prompt prompt = getPromptById(id);
-        promptRepository.delete(prompt);
+    public void deletePrompt(long promptId, User user) {
+        Prompt deletePrompt = getPromptById(promptId);
+        if (!deletePrompt.getUserId().equals(user.getId())) {
+            throw new AccessDeniedException("You are not authorized to delete this prompt.");
+        }
+
+        promptRepository.delete(deletePrompt);
+        logMessage(deletePrompt, String.format("deleted by user[%d]", user.getId()));
+    }
+
+    //for user mass deleting prompts
+    //TODO: make another method just for utility?
+    public void deletePromptsByUser(List<Prompt> promptsToDelete, User user){
+        for (Prompt prompt: promptsToDelete) {
+            if (prompt.getUserId() != user.getId()) {
+                logMessage(prompt,
+                        String.format("prompt was not deleted because user[%d] is not the owner", user.getId())
+                );
+            } else {
+                promptRepository.delete(prompt);
+                logMessage(prompt, String.format("deleted by user[%d]", user.getId()));
+            }
+        }
     }
 
     public List<Prompt> searchByPhrase(String phrase) {
