@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class TagService {
+public class TagService implements ITagService{
     private static final Logger logger = LoggerFactory.getLogger(TagService.class);
     @Autowired
     private ITagRepository tagRepository;

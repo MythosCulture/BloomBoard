@@ -1,16 +1,15 @@
 package com.bloomboard.promptboard.prompt;
 
 import com.bloomboard.promptboard.security.model.User;
-import com.bloomboard.promptboard.security.service.SecurityServiceImpl;
-import com.bloomboard.promptboard.security.service.UserServiceImpl;
-import com.bloomboard.promptboard.tag.TagService;
+import com.bloomboard.promptboard.security.service.ISecurityService;
+import com.bloomboard.promptboard.tag.ITagService;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,13 +26,13 @@ public class PromptController {
 
     private static final Logger logger = LoggerFactory.getLogger(PromptController.class);
     @Autowired
-    private final PromptService promptService;
+    private final IPromptService promptService;
     @Autowired
-    private final TagService tagService;
+    private final ITagService tagService;
     @Autowired
-    private final SecurityServiceImpl securityService;
+    private final ISecurityService securityService;
     @Autowired
-    private final UserServiceImpl userService;
+    private final UserDetailsService userDetailsService;
 
 
     @GetMapping("/new") //GET
@@ -48,32 +47,26 @@ public class PromptController {
             return "createPromptView";
         }
 
-        User user = userService.findByUsernameIgnoreCase(
-                securityService.getAuthenticatedUsername()
-        );
+        User user = (User) userDetailsService.loadUserByUsername(securityService.getAuthenticatedUsername());
 
-        promptService.createPrompt(promptRequest, user);
+        promptService.createPrompt(promptRequest, user.getId());
 
         return "redirect:/home";
     }
 
     @PostMapping("/edit")
     public String updatePrompt (@ModelAttribute("updatePromptForm") @Valid PromptRequest promptRequest, BindingResult bindingResult) {
-        User user = userService.findByUsernameIgnoreCase(
-                securityService.getAuthenticatedUsername()
-        );
+        User user = (User) userDetailsService.loadUserByUsername(securityService.getAuthenticatedUsername());
 
-        promptService.updatePrompt(promptRequest, user);
+        promptService.updatePrompt(promptRequest, user.getId());
 
         return "redirect:/home";
     }
     @PostMapping("/delete")
     public String deletePrompt (@ModelAttribute("updatePromptForm") @Valid PromptRequest promptRequest, BindingResult bindingResult) {
-        User user = userService.findByUsernameIgnoreCase(
-                securityService.getAuthenticatedUsername()
-        );
+        User user = (User) userDetailsService.loadUserByUsername(securityService.getAuthenticatedUsername());
 
-        promptService.deletePrompt(promptRequest.getId());
+        promptService.deletePrompt(promptRequest.getId(), user.getId());
 
         return "redirect:/home";
     }
@@ -81,7 +74,7 @@ public class PromptController {
     @GetMapping("/browse")
     public String viewBrowse(Model model) {
         //I don't know why but this needs to be called first for the readMore modal to not crash the page...
-        User user = userService.findByUsernameIgnoreCase(securityService.getAuthenticatedUsername());
+        User user = (User) userDetailsService.loadUserByUsername(securityService.getAuthenticatedUsername());
         //get all prompts first
 
         //TODO: Replace default search / add pagination
@@ -107,7 +100,7 @@ public class PromptController {
     public String browse(@ModelAttribute ("searchPromptForm") @Valid SearchRequest searchRequest, BindingResult bindingResult, Model model) {
         //TODO: Dont know how to set up this post mapping when theres other model attributes
         //TODO: Fix the filter bar taking up so much room...
-        User user = userService.findByUsernameIgnoreCase(securityService.getAuthenticatedUsername());
+        User user = (User) userDetailsService.loadUserByUsername(securityService.getAuthenticatedUsername());
 
         List<Prompt> searchedPrompts = new ArrayList<Prompt>();
 
@@ -158,7 +151,7 @@ public class PromptController {
     }
     @GetMapping("/myprompts/all")
     public String viewSearch_MyPrompts(Model model) {
-        User user = userService.findByUsernameIgnoreCase(securityService.getAuthenticatedUsername());
+        User user = (User) userDetailsService.loadUserByUsername(securityService.getAuthenticatedUsername());
 
         model.addAttribute(
                 "prompts",

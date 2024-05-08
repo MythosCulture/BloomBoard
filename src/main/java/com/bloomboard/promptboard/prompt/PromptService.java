@@ -1,8 +1,7 @@
 package com.bloomboard.promptboard.prompt;
 
-import com.bloomboard.promptboard.security.model.User;
+import com.bloomboard.promptboard.tag.ITagService;
 import com.bloomboard.promptboard.tag.Tag;
-import com.bloomboard.promptboard.tag.TagService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,26 +17,26 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class PromptService {
+public class PromptService implements IPromptService{
 
     private static final Logger logger = LoggerFactory.getLogger(PromptService.class);
     @Autowired
     private final IPromptRepository promptRepository;
     @Autowired
-    private final TagService tagService;
+    private final ITagService tagService;
 
     public List<Prompt> findAllPrompts(){
         return promptRepository.findAll();
     }
 
-    public Prompt getPromptById(long id){
+    public Prompt getPromptById(Long id){
         Optional<Prompt> optionalPrompt = promptRepository.findById(id);
         return optionalPrompt.orElseThrow(() -> new NoResultException(
                 String.format("Could not find prompt with id: %s.", id)
         ));
     }
 
-    public void createPrompt (PromptRequest prompt, User user) {
+    public void createPrompt (PromptRequest prompt, Long userId) {
         String[] promptTags = tagService.getFormattedTagsString(prompt.getTags());
         Set<Tag> tagSet = tagService.saveNewTags(promptTags);
 
@@ -46,17 +45,17 @@ public class PromptService {
                 prompt.getSummary(),
                 prompt.getContent(),
                 tagSet,
-                user.getId(),
+                userId,
                 OffsetDateTime.parse(prompt.getSubmissionDate())
         );
 
         promptRepository.save(newPrompt);
-        logMessage(newPrompt,String.format("created by user[%d]", user.getId()));
+        logMessage(newPrompt,String.format("created by user[%d]", userId));
     }
 
-    public void updatePrompt (PromptRequest prompt, User user) {
+    public void updatePrompt (PromptRequest prompt, Long userId) {
         Prompt updatedPrompt = getPromptById(prompt.getId());
-        if (!updatedPrompt.getUserId().equals(user.getId())) {
+        if (!updatedPrompt.getUserId().equals(userId)) {
             throw new AccessDeniedException("You are not authorized to edit this prompt.");
         }
 
@@ -70,34 +69,34 @@ public class PromptService {
         updatedPrompt.setTags(tagSet);
 
         promptRepository.save(updatedPrompt);
-        logMessage(updatedPrompt,String.format("updated by user[%d]", user.getId()));
+        logMessage(updatedPrompt,String.format("updated by user[%d]", userId));
     }
 
-    public List<Prompt> findByUser_id (Long user_id) {
-        return promptRepository.findByUserId(user_id);
+    public List<Prompt> findByUser_id (Long userId) {
+        return promptRepository.findByUserId(userId);
     }
 
-    public void deletePrompt(long promptId, User user) {
+    public void deletePrompt(Long promptId, Long userId) {
         Prompt deletePrompt = getPromptById(promptId);
-        if (!deletePrompt.getUserId().equals(user.getId())) {
+        if (!deletePrompt.getUserId().equals(userId)) {
             throw new AccessDeniedException("You are not authorized to delete this prompt.");
         }
 
         promptRepository.delete(deletePrompt);
-        logMessage(deletePrompt, String.format("deleted by user[%d]", user.getId()));
+        logMessage(deletePrompt, String.format("deleted by user[%d]", userId));
     }
 
     //for user mass deleting prompts
     //TODO: make another method just for utility?
-    public void deletePromptsByUser(List<Prompt> promptsToDelete, User user){
+    public void deletePromptsByUser(List<Prompt> promptsToDelete, Long userId){
         for (Prompt prompt: promptsToDelete) {
-            if (prompt.getUserId() != user.getId()) {
+            if (prompt.getUserId() != userId) {
                 logMessage(prompt,
-                        String.format("prompt was not deleted because user[%d] is not the owner", user.getId())
+                        String.format("prompt was not deleted because user[%d] is not the owner", userId)
                 );
             } else {
                 promptRepository.delete(prompt);
-                logMessage(prompt, String.format("deleted by user[%d]", user.getId()));
+                logMessage(prompt, String.format("deleted by user[%d]", userId));
             }
         }
     }

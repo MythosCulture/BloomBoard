@@ -1,15 +1,14 @@
 package com.bloomboard.promptboard;
 
-import com.bloomboard.promptboard.prompt.Prompt;
-import com.bloomboard.promptboard.prompt.IPromptRepository;
-import com.bloomboard.promptboard.prompt.PromptService;
+import com.bloomboard.promptboard.prompt.*;
 import com.bloomboard.promptboard.security.model.User;
 import com.bloomboard.promptboard.security.service.UserServiceImpl;
+import com.bloomboard.promptboard.tag.ITagService;
 import com.bloomboard.promptboard.tag.Tag;
-import com.bloomboard.promptboard.tag.TagService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -24,11 +23,11 @@ public class PromptAPITest {
     @Autowired
     private IPromptRepository promptRepository;
     @Autowired
-    private PromptService promptService;
+    private IPromptService promptService;
     @Autowired
-    private UserServiceImpl userService;
+    private UserDetailsService userDetailsService;
     @Autowired
-    private TagService tagService;
+    private ITagService tagService;
 
     private Prompt getPrompt() {
         //name, content, tags optional
@@ -42,24 +41,35 @@ public class PromptAPITest {
 
         String[] promptTags = tagService.getFormattedTagsString(tag1 + "," + tag2 + "," + tag3);
         Set<Tag> tags = tagService.saveNewTags(promptTags);
-        User user = userService.findByUsernameIgnoreCase("chonk");
+        User user = (User) userDetailsService.loadUserByUsername("chonk");
 
         return new Prompt(title, summary, content, tags, user.getId(), OffsetDateTime.now());
     }
     @Test
     public void deletePromptTest() {
+        User user = (User) userDetailsService.loadUserByUsername("chonk");
+
         // create a new prompt and save it to the repository
         Prompt prompt = getPrompt();
         promptRepository.save(prompt);
 
         // delete the prompt
-        promptService.deletePrompt(prompt.getId());
+        promptService.deletePrompt(prompt.getId(), user.getId());
 
         // ensure that the prompt no longer exists in the repository
         Optional<Prompt> deletedPrompt = promptRepository.findById(prompt.getId());
         assertFalse(deletedPrompt.isPresent());
     }
 
+    public void deletePromptsTest(){
+        User user = (User) userDetailsService.loadUserByUsername("chonk");
+
+        List<String> tags = List.of("test 01");
+        List<Prompt> promptsToDelete = promptService.searchByTags(tags);
+        promptService.deletePromptsByUser(promptsToDelete, user.getId());
+
+        //TODO: assert that prompts are actually deleted
+    }
     @Test
     public void searchByPhraseTest() {
         //Define search phrase and retrieve matching prompts

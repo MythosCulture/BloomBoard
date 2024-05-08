@@ -1,39 +1,43 @@
 package com.bloomboard.promptboard;
 
+import com.bloomboard.promptboard.prompt.IPromptService;
 import com.bloomboard.promptboard.prompt.Prompt;
 import com.bloomboard.promptboard.prompt.PromptRequest;
-import com.bloomboard.promptboard.prompt.PromptService;
 import com.bloomboard.promptboard.security.model.RegisterRequest;
 import com.bloomboard.promptboard.security.model.User;
-import com.bloomboard.promptboard.security.service.SecurityServiceImpl;
-import com.bloomboard.promptboard.security.service.UserServiceImpl;
+import com.bloomboard.promptboard.security.service.ISecurityService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
-import org.thymeleaf.util.StringUtils;
 
-import javax.persistence.NoResultException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Controller //@RestController //doesnt work with thymeleaf
 @RequiredArgsConstructor
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
-    private final UserServiceImpl userService;
+    private final UserDetailsManager userDetailsManager;
     @Autowired
-    private final SecurityServiceImpl securityService;
+    private final UserDetailsService userDetailsService;
     @Autowired
-    private final PromptService promptService;
+    private final ISecurityService securityService;
+    @Autowired
+    private final IPromptService promptService;
+    @Autowired
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/register") //GET
     public String register (Model model) {
@@ -58,12 +62,16 @@ public class UserController {
             return "registerView";
         }
 
-        User newUser = new User(registerRequest.getUsername(),registerRequest.getEmail(),registerRequest.getPasswordConfirm());
+        User newUser = new User(
+                registerRequest.getUsername(),
+                registerRequest.getEmail(),
+                passwordEncoder.encode(registerRequest.getPasswordConfirm())
+        );
         try {
-            userService.findByUsernameIgnoreCase(newUser.getUsername());
-        } catch (NoResultException e) {
-            userService.save(newUser);
-            //securityService.autoLogin(newUser.getUsername(), newUser.getPasswordConfirm()); //TODO: add autologin
+            userDetailsService.loadUserByUsername(newUser.getUsername());
+        } catch (UsernameNotFoundException e) {
+            userDetailsManager.createUser(newUser);
+            //securityService.autoLogin(newUser.getUsername(), registerRequest.getPasswordConfirm()); //TODO: add autologin
             return "redirect:/home";
         }
         FieldError error = new FieldError("userForm","username","An account already exists with that username.");
@@ -91,7 +99,7 @@ public class UserController {
 
     @GetMapping({"/","/home"})
     public String viewWelcome(Model model) {
-        User user = userService.findByUsernameIgnoreCase(securityService.getAuthenticatedUsername());
+        User user = (User) userDetailsService.loadUserByUsername(securityService.getAuthenticatedUsername());
         List<Prompt> userPrompts = promptService.findByUser_id(user.getId());
 
         //also used in /prompts/all

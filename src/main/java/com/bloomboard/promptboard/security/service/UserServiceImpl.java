@@ -3,42 +3,62 @@ package com.bloomboard.promptboard.security.service;
 import com.bloomboard.promptboard.security.model.User;
 import com.bloomboard.promptboard.security.model.UserRole;
 import com.bloomboard.promptboard.security.repository.IUserRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl {
+public class UserServiceImpl implements UserDetailsService, UserDetailsManager {
     @Autowired
     private final IUserRepository userRepository;
     @Autowired
     private final BCryptPasswordEncoder passwordEncoder;
 
-    //private final static String USER_NOT_FOUND_MSG = "user with email %s not found";
-
-    public void save(User user) {
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setUserRole(UserRole.USER);
-
-        userRepository.save(user);
+    public List<User> findByUserRole(UserRole userRole) {
+        return userRepository.findByUserRole(userRole);
     }
 
-    public User findByUsernameIgnoreCase(String username) {
+    //TODO: Update the error to logger
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        //Returns UserDetails but can be cast to User as needed
         Optional<User> optionalUser = userRepository.findByUsernameIgnoreCase(username);
-        return optionalUser.orElseThrow(() -> new NoResultException(
-                String.format("Could not find user %s.", username)
+        return optionalUser.orElseThrow(() -> new UsernameNotFoundException(
+                String.format("UserDetailsService error: Username [%s] not found", username)
         ));
     }
 
-    public List<User> findByUserRole(UserRole userRole) {
-        return userRepository.findByUserRole(userRole);
+    @Override
+    public void createUser(UserDetails user) {
+        userRepository.save((User)user);
+    }
+
+    @Override
+    public void updateUser(UserDetails user) {
+
+    }
+
+    @Override
+    public void deleteUser(String username) {
+
+    }
+
+    @Override
+    public void changePassword(String oldPassword, String newPassword) {
+
+    }
+
+    @Override
+    public boolean userExists(String username) {
+        return false;
     }
 }
