@@ -71,7 +71,7 @@ public class UserController {
             userDetailsService.loadUserByUsername(newUser.getUsername());
         } catch (UsernameNotFoundException e) {
             userDetailsManager.createUser(newUser);
-            //securityService.autoLogin(newUser.getUsername(), registerRequest.getPasswordConfirm()); //TODO: add autologin
+            securityService.autoLogin(newUser.getUsername(), registerRequest.getPasswordConfirm());
             return "redirect:/home";
         }
         FieldError error = new FieldError("userForm","username","An account already exists with that username.");
