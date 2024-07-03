@@ -15,5 +15,6 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     List<User> findByUserRole(UserRole userRole);
     Optional<User> findByEmail(String email);
     Optional<User> findByUsernameIgnoreCase(String username);
+    void deleteByUsernameIgnoreCase(String username);
     //List<User> findByName(String name);
 }
