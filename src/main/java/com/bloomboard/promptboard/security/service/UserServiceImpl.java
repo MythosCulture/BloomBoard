@@ -12,7 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserDetailsService, UserDetailsManager {
     @Autowired
     private final AuthenticationManager authenticationManager;
     @Autowired
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     public List<User> findByUserRole(UserRole userRole) {
