@@ -19,10 +19,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SecurityServiceImpl implements ISecurityService{
 
-    @Autowired
     private final AuthenticationManager authenticationManager;
-    @Autowired
+    private final UserDetailsManager userDetailsManager;
+    private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
+    private final IJwtService jwtService;
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
 
@@ -43,6 +44,58 @@ public class SecurityServiceImpl implements ISecurityService{
         }
 
         return authentication.getName();
+    }
+
+    public UserDetails getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null || AnonymousAuthenticationToken.class.isAssignableFrom(authentication.getClass())){
+            throw new AuthenticationCredentialsNotFoundException("Authentication Credentials Not Found");
+        }
+        return userDetailsService.loadUserByUsername(authentication.getName());
+    }
+
+    public AuthenticationResponse generateJwtToken(String username) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        String jwtToken = jwtService.generateToken(userDetails);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+    public AuthenticationResponse authenticate(LoginRequest request){
+        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
+        Authentication authenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                request.getPassword(),
+                userDetails.getAuthorities()
+        );
+
+        authenticationManager.authenticate(authenticationToken);
+        if (authenticationToken.isAuthenticated()) {
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(authenticationToken);
+            SecurityContextHolder.setContext(context);
+
+            logger.info("User logged in successfully: " + request.getUsername());
+
+            String jwtToken = jwtService.generateToken(userDetails);
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .build();
+        } else throw new BadCredentialsException("Authentication failed: invalid credentials provided.");
+    }
+
+    public AuthenticationResponse register(RegisterRequest request){
+        User user = new User(
+                request.getUsername(),
+                request.getEmail(),
+                passwordEncoder.encode(request.getPasswordConfirm())
+        );
+        userDetailsManager.createUser(user);
+
+        String jwtToken = jwtService.generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
     }
 
     @Override
