@@ -1,12 +1,12 @@
-package com.bloomboard.promptboard.prompt;
+package com.bloomboard.promptboard.repository;
 
+import com.bloomboard.promptboard.model.Prompt;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface IPromptRepository extends JpaRepository<Prompt, Long> {

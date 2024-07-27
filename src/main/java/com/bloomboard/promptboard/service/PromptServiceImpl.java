@@ -1,7 +1,9 @@
-package com.bloomboard.promptboard.prompt;
+package com.bloomboard.promptboard.service;
 
-import com.bloomboard.promptboard.tag.ITagService;
-import com.bloomboard.promptboard.tag.Tag;
+import com.bloomboard.promptboard.repository.IPromptRepository;
+import com.bloomboard.promptboard.model.Prompt;
+import com.bloomboard.promptboard.model.PromptRequest;
+import com.bloomboard.promptboard.model.Tag;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,13 +19,13 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class PromptService implements IPromptService{
+public class PromptServiceImpl implements PromptService {
 
-    private static final Logger logger = LoggerFactory.getLogger(PromptService.class);
+    private static final Logger logger = LoggerFactory.getLogger(PromptServiceImpl.class);
     @Autowired
     private final IPromptRepository promptRepository;
     @Autowired
-    private final ITagService tagService;
+    private final TagService tagService;
 
     public List<Prompt> findAllPrompts(){
         return promptRepository.findAll();

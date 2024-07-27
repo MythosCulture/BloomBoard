@@ -1,9 +1,7 @@
-package com.bloomboard.promptboard.security.service;
+package com.bloomboard.promptboard.service;
 
-import com.bloomboard.promptboard.prompt.IPromptService;
-import com.bloomboard.promptboard.prompt.Prompt;
-import com.bloomboard.promptboard.security.model.User;
-import com.bloomboard.promptboard.tag.ITagService;
+import com.bloomboard.promptboard.model.Prompt;
+import com.bloomboard.promptboard.model.User;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +21,9 @@ public class DatabaseCleanupService {
     @Autowired
     private final UserDetailsService userDetailsService;
     @Autowired
-    private final IPromptService promptService;
+    private final PromptService promptService;
     @Autowired
-    private final ITagService tagService;
+    private final TagService tagService;
 
     //@Scheduled(fixedRate = 5000) // Schedule to run every 5 seconds
     public void testScheduledMethod() {

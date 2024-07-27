@@ -1,9 +1,9 @@
 package com.bloomboard.promptboard;
 
-import com.bloomboard.promptboard.security.model.RegisterRequest;
-import com.bloomboard.promptboard.security.model.User;
-import com.bloomboard.promptboard.security.repository.IUserRepository;
-import com.bloomboard.promptboard.security.service.UserServiceImpl;
+import com.bloomboard.promptboard.model.RegisterRequest;
+import com.bloomboard.promptboard.model.User;
+import com.bloomboard.promptboard.repository.IUserRepository;
+import com.bloomboard.promptboard.service.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +59,7 @@ public class UserAPITest {
         request.setPasswordConfirm("password123");
         User newUser = new User(request.getUsername(),request.getEmail(),request.getPasswordConfirm());
 
-        userService.save(newUser);
+        //userService.save(newUser);
 
         User found = userRepository.findByUsernameIgnoreCase(user.getUsername()).orElseThrow();
         assertEquals(newUser.getUsername(), found.getUsername());

@@ -1,4 +1,4 @@
-package com.bloomboard.promptboard.prompt;
+package com.bloomboard.promptboard.model;
 
 import javax.validation.constraints.Size;
 import java.util.Arrays;

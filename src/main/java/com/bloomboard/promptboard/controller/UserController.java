@@ -1,13 +1,14 @@
-package com.bloomboard.promptboard;
+package com.bloomboard.promptboard.controller;
 
-import com.bloomboard.promptboard.prompt.IPromptService;
-import com.bloomboard.promptboard.prompt.Prompt;
-import com.bloomboard.promptboard.prompt.PromptRequest;
-import com.bloomboard.promptboard.security.model.AuthenticationResponse;
-import com.bloomboard.promptboard.security.model.LoginRequest;
-import com.bloomboard.promptboard.security.model.RegisterRequest;
-import com.bloomboard.promptboard.security.model.User;
-import com.bloomboard.promptboard.security.service.ISecurityService;
+import com.bloomboard.promptboard.security.JwtUtil;
+import com.bloomboard.promptboard.service.PromptService;
+import com.bloomboard.promptboard.model.Prompt;
+import com.bloomboard.promptboard.model.PromptRequest;
+import com.bloomboard.promptboard.model.AuthenticationResponse;
+import com.bloomboard.promptboard.model.LoginRequest;
+import com.bloomboard.promptboard.model.RegisterRequest;
+import com.bloomboard.promptboard.model.User;
+import com.bloomboard.promptboard.service.SecurityService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
@@ -39,14 +39,14 @@ public class UserController {
     @Autowired
     private final UserDetailsService userDetailsService;
     @Autowired
-    private final ISecurityService securityService;
+    private final SecurityService securityService;
     @Autowired
-    private final IPromptService promptService;
+    private final PromptService promptService;
     @Autowired
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/register") //GET
-    public String register (Model model) {
+    public String oldregister (Model model) {
         if (securityService.isAuthenticated()) {
             return "redirect:/";
         }
@@ -56,7 +56,7 @@ public class UserController {
         return "registerView";
     }
     @PostMapping("/register") //POST
-    public String register (@ModelAttribute("userForm") @Valid RegisterRequest registerRequest, BindingResult bindingResult) {
+    public String oldregister (@ModelAttribute("userForm") @Valid RegisterRequest registerRequest, BindingResult bindingResult) {
         if (!Objects.equals(registerRequest.getPassword(), registerRequest.getPasswordConfirm())) {
             //adds fielderror to bindingresult so that error shows up on form
             FieldError passwordError = new FieldError("userForm", "passwordConfirm", "password doesn't match.");
@@ -87,9 +87,8 @@ public class UserController {
         return "registerView";
 
     }
-
     @GetMapping("/login")
-    public String login(Model model, String error, String logout) {
+    public String oldlogin(Model model, String error, String logout) {
         if (securityService.isAuthenticated()) {
             logger.info("User Login Authenticated: " + securityService.getAuthenticatedUsername());
             return "redirect:/";
@@ -138,7 +137,8 @@ public class UserController {
     public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest request) {
         try{
             if (securityService.isAuthenticated()) {
-                return ResponseEntity.ok(securityService.generateJwtToken(request.getUsername()));
+                String token = JwtUtil.generateToken(securityService.getAuthenticatedUsername());
+                return ResponseEntity.ok(new AuthenticationResponse(token));
             }
             return ResponseEntity.ok(securityService.authenticate(request));
         } catch(BadCredentialsException e){

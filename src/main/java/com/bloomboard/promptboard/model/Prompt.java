@@ -1,7 +1,5 @@
-package com.bloomboard.promptboard.prompt;
+package com.bloomboard.promptboard.model;
 
-import com.bloomboard.promptboard.security.model.User;
-import com.bloomboard.promptboard.tag.Tag;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.NoArgsConstructor;
 

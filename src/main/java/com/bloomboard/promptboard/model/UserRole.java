@@ -1,4 +1,4 @@
-package com.bloomboard.promptboard.security.model;
+package com.bloomboard.promptboard.model;
 
 public enum UserRole {
     USER,

@@ -1,5 +1,7 @@
-package com.bloomboard.promptboard.tag;
+package com.bloomboard.promptboard.service;
 
+import com.bloomboard.promptboard.repository.ITagRepository;
+import com.bloomboard.promptboard.model.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +14,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class TagService implements ITagService{
-    private static final Logger logger = LoggerFactory.getLogger(TagService.class);
+public class TagServiceImpl implements TagService {
+    private static final Logger logger = LoggerFactory.getLogger(TagServiceImpl.class);
     @Autowired
     private ITagRepository tagRepository;
 

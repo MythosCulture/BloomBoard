@@ -1,6 +1,6 @@
 package com.bloomboard.promptboard.security;
 
-import com.bloomboard.promptboard.security.repository.IUserRepository;
+import com.bloomboard.promptboard.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,8 +1,12 @@
-package com.bloomboard.promptboard.prompt;
+package com.bloomboard.promptboard.controller;
 
-import com.bloomboard.promptboard.security.model.User;
-import com.bloomboard.promptboard.security.service.ISecurityService;
-import com.bloomboard.promptboard.tag.ITagService;
+import com.bloomboard.promptboard.model.Prompt;
+import com.bloomboard.promptboard.model.PromptRequest;
+import com.bloomboard.promptboard.model.SearchRequest;
+import com.bloomboard.promptboard.model.User;
+import com.bloomboard.promptboard.service.PromptService;
+import com.bloomboard.promptboard.service.SecurityService;
+import com.bloomboard.promptboard.service.TagService;
 
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -26,11 +30,11 @@ public class PromptController {
 
     private static final Logger logger = LoggerFactory.getLogger(PromptController.class);
     @Autowired
-    private final IPromptService promptService;
+    private final PromptService promptService;
     @Autowired
-    private final ITagService tagService;
+    private final TagService tagService;
     @Autowired
-    private final ISecurityService securityService;
+    private final SecurityService securityService;
     @Autowired
     private final UserDetailsService userDetailsService;
 

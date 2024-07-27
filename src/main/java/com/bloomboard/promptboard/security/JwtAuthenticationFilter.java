@@ -1,6 +1,5 @@
 package com.bloomboard.promptboard.security;
 
-import com.bloomboard.promptboard.security.service.IJwtService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -24,7 +23,6 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
-    private final IJwtService jwtService;
     private final UserDetailsService userDetailsService;
 
     @Override
@@ -46,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         jwt = authHeader.substring(7);
-        userName = jwtService.extractUsername(jwt);//extract userName from JWT token
+        userName = JwtUtil.extractUsername(jwt);//extract userName from JWT token
         logger.info("Extracted username from JWT token: {}", userName);
 
         //check if userName isn't null, and if the user is authenticated
@@ -54,7 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
             logger.info("User details retrieved from UserDetailsService: {}", userDetails);
 
-            if (jwtService.isTokenValid(jwt, userDetails)) {
+            if (JwtUtil.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,

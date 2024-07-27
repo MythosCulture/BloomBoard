@@ -1,4 +1,5 @@
-package com.bloomboard.promptboard.tag;
+package com.bloomboard.promptboard.repository;
+import com.bloomboard.promptboard.model.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

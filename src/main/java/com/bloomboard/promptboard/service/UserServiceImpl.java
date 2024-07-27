@@ -1,8 +1,8 @@
-package com.bloomboard.promptboard.security.service;
+package com.bloomboard.promptboard.service;
 
-import com.bloomboard.promptboard.security.model.User;
-import com.bloomboard.promptboard.security.model.UserRole;
-import com.bloomboard.promptboard.security.repository.IUserRepository;
+import com.bloomboard.promptboard.model.User;
+import com.bloomboard.promptboard.model.UserRole;
+import com.bloomboard.promptboard.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserDetailsService, UserDetailsManager {
     @Autowired
     private final IUserRepository userRepository;
     @Autowired
-    private final ISecurityService securityService;
+    private final SecurityService securityService;
     @Autowired
     private final AuthenticationManager authenticationManager;
     @Autowired

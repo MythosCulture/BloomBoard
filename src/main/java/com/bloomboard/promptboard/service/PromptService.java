@@ -1,10 +1,11 @@
-package com.bloomboard.promptboard.prompt;
+package com.bloomboard.promptboard.service;
 
-import com.bloomboard.promptboard.security.model.User;
+import com.bloomboard.promptboard.model.Prompt;
+import com.bloomboard.promptboard.model.PromptRequest;
 
 import java.util.List;
 
-public interface IPromptService {
+public interface PromptService {
     Prompt getPromptById(Long id);
     List<Prompt> findAllPrompts();
     void createPrompt (PromptRequest prompt, Long userId);

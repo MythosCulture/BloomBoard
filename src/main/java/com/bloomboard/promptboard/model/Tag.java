@@ -1,9 +1,8 @@
-package com.bloomboard.promptboard.tag;
+package com.bloomboard.promptboard.model;
 
-import com.bloomboard.promptboard.prompt.Prompt;
+import com.bloomboard.promptboard.model.Prompt;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.NoArgsConstructor;
-import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.HashSet;

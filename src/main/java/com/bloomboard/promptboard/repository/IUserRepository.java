@@ -1,7 +1,7 @@
-package com.bloomboard.promptboard.security.repository;
+package com.bloomboard.promptboard.repository;
 
-import com.bloomboard.promptboard.security.model.User;
-import com.bloomboard.promptboard.security.model.UserRole;
+import com.bloomboard.promptboard.model.User;
+import com.bloomboard.promptboard.model.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,10 +1,11 @@
 package com.bloomboard.promptboard;
 
-import com.bloomboard.promptboard.prompt.*;
-import com.bloomboard.promptboard.security.model.User;
-import com.bloomboard.promptboard.security.service.UserServiceImpl;
-import com.bloomboard.promptboard.tag.ITagService;
-import com.bloomboard.promptboard.tag.Tag;
+import com.bloomboard.promptboard.model.Prompt;
+import com.bloomboard.promptboard.model.User;
+import com.bloomboard.promptboard.repository.IPromptRepository;
+import com.bloomboard.promptboard.service.PromptService;
+import com.bloomboard.promptboard.service.TagService;
+import com.bloomboard.promptboard.model.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,11 +24,11 @@ public class PromptAPITest {
     @Autowired
     private IPromptRepository promptRepository;
     @Autowired
-    private IPromptService promptService;
+    private PromptService promptService;
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
-    private ITagService tagService;
+    private TagService tagService;
 
     private Prompt getPrompt() {
         //name, content, tags optional

@@ -1,6 +1,6 @@
-package com.bloomboard.promptboard;
+package com.bloomboard.promptboard.controller;
 
-import com.bloomboard.promptboard.security.service.ISecurityService;
+import com.bloomboard.promptboard.service.SecurityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/account")
 public class AccountController {
     @Autowired
-    private final ISecurityService securityService;
+    private final SecurityService securityService;
     @Autowired
     private final UserDetailsService userDetailsService;
 
