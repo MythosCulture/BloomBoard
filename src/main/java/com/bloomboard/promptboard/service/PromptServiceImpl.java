@@ -1,5 +1,6 @@
 package com.bloomboard.promptboard.service;
 
+import com.bloomboard.promptboard.model.SearchRequest;
 import com.bloomboard.promptboard.repository.IPromptRepository;
 import com.bloomboard.promptboard.model.Prompt;
 import com.bloomboard.promptboard.model.PromptRequest;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -27,8 +29,14 @@ public class PromptServiceImpl implements PromptService {
     @Autowired
     private final TagService tagService;
 
+    public List<Prompt> findByUser_id (Long userId) {
+        return promptRepository.findByUserId(userId);
+    }
+
     public List<Prompt> findAllPrompts(){
-        return promptRepository.findAll();
+        List<Prompt> prompts = promptRepository.findAll();
+        formatSummaries(prompts);
+        return prompts;
     }
 
     public Prompt getPromptById(Long id){
@@ -38,7 +46,7 @@ public class PromptServiceImpl implements PromptService {
         ));
     }
 
-    public void createPrompt (PromptRequest prompt, Long userId) {
+    public Prompt createPrompt (PromptRequest prompt, Long userId) {
         String[] promptTags = tagService.getFormattedTagsString(prompt.getTags());
         Set<Tag> tagSet = tagService.saveNewTags(promptTags);
 
@@ -51,33 +59,30 @@ public class PromptServiceImpl implements PromptService {
                 OffsetDateTime.parse(prompt.getSubmissionDate())
         );
 
-        promptRepository.save(newPrompt);
+        Prompt savedPrompt = promptRepository.save(newPrompt);
         logMessage(newPrompt,String.format("created by user[%d]", userId));
+        return savedPrompt;
     }
 
-    public void updatePrompt (PromptRequest prompt, Long userId) {
-        Prompt updatedPrompt = getPromptById(prompt.getId());
-        if (!updatedPrompt.getUserId().equals(userId)) {
+    public Prompt updatePrompt (Long promptId, PromptRequest promptRequest, Long userId) {
+        Prompt prompt = getPromptById(promptId);
+        if (!prompt.getUserId().equals(userId)) {
             throw new AccessDeniedException("You are not authorized to edit this prompt.");
         }
 
-        updatedPrompt.setTitle(prompt.getTitle());
-        updatedPrompt.setContent(prompt.getContent());
-        updatedPrompt.setSummary(prompt.getSummary());
-        updatedPrompt.setLastModified(OffsetDateTime.parse(prompt.getSubmissionDate()));
+        prompt.setTitle(promptRequest.getTitle());
+        prompt.setContent(promptRequest.getContent());
+        prompt.setSummary(promptRequest.getSummary());
+        prompt.setLastModified(OffsetDateTime.parse(promptRequest.getSubmissionDate()));
 
-        String[] promptTags = tagService.getFormattedTagsString(prompt.getTags());
+        String[] promptTags = tagService.getFormattedTagsString(promptRequest.getTags());
         Set<Tag> tagSet = tagService.saveNewTags(promptTags);
-        updatedPrompt.setTags(tagSet);
+        prompt.setTags(tagSet);
 
-        promptRepository.save(updatedPrompt);
-        logMessage(updatedPrompt,String.format("updated by user[%d]", userId));
+        Prompt updatedPrompt = promptRepository.save(prompt);
+        logMessage(prompt,String.format("updated by user[%d]", userId));
+        return updatedPrompt;
     }
-
-    public List<Prompt> findByUser_id (Long userId) {
-        return promptRepository.findByUserId(userId);
-    }
-
     public void deletePrompt(Long promptId, Long userId) {
         Prompt deletePrompt = getPromptById(promptId);
         if (!deletePrompt.getUserId().equals(userId)) {
@@ -88,21 +93,26 @@ public class PromptServiceImpl implements PromptService {
         logMessage(deletePrompt, String.format("deleted by user[%d]", userId));
     }
 
-    //for user mass deleting prompts
-    //TODO: make another method just for utility?
-    public void deletePromptsByUser(List<Prompt> promptsToDelete, Long userId){
+    public void deletePromptsByUser(Long userId){
+        List<Prompt> promptsToDelete = findByUser_id(userId);
+        if (promptsToDelete.isEmpty()) {
+            throw new NoResultException("No prompts found for user with ID " + userId);
+        }
         for (Prompt prompt: promptsToDelete) {
-            if (prompt.getUserId() != userId) {
-                logMessage(prompt,
-                        String.format("prompt was not deleted because user[%d] is not the owner", userId)
-                );
-            } else {
                 promptRepository.delete(prompt);
-                logMessage(prompt, String.format("deleted by user[%d]", userId));
-            }
+                logMessage(prompt, String.format("Mass deletion by userId: user[%d]", userId));
         }
     }
 
+    private List<Prompt> formatSummaries(List<Prompt> promptList) {
+        for (Prompt prompt : promptList) {
+            if (prompt.getSummary() == null || prompt.getSummary().equals("")) {
+                String summary = prompt.getContent().length() < 252 ? prompt.getContent() : prompt.getContent().substring(0,252) + "...";
+                prompt.setSummary(summary);
+            }
+        }
+        return promptList;
+    }
     public List<Prompt> searchByPhrase(String phrase) {
         return promptRepository.findByPhrase(phrase.trim().toLowerCase());
     }
@@ -110,6 +120,41 @@ public class PromptServiceImpl implements PromptService {
         //Set all tags to lowercase before searching to prevent case mismatching
         tags.replaceAll(String::toLowerCase);
         return promptRepository.findByTagsIn(tags);
+    }
+    public List<Prompt> searchPrompts(SearchRequest searchRequest) {
+        List<Prompt> searchedPrompts = new ArrayList<>();
+
+        // Search by phrase if it's provided
+        List<Prompt> byPhrase = new ArrayList<>();
+        if (searchRequest.getPhrase() != null && !searchRequest.getPhrase().isEmpty()) {
+            byPhrase = searchByPhrase(searchRequest.getPhrase());
+        }
+
+        // Search by tags if provided
+        List<Prompt> byTags = new ArrayList<>();
+        if (searchRequest.getTags() != null && !searchRequest.getTags().isEmpty()) {
+            byTags = searchByTags(searchRequest.getTags());
+        }
+
+        // Combine both lists
+        if (byPhrase.isEmpty() && byTags.isEmpty()) {
+            // If both searches return empty, return empty list
+            return searchedPrompts;
+        } else if (byPhrase.isEmpty()) {
+            searchedPrompts = byTags; // Only tags found
+        } else if (byTags.isEmpty()) {
+            searchedPrompts = byPhrase; // Only phrase found
+        } else {
+            // If both lists have results, only return the intersection
+            for (Prompt prompt : byPhrase) {
+                if (byTags.contains(prompt)) {
+                    searchedPrompts.add(prompt);
+                }
+            }
+        }
+
+        formatSummaries(searchedPrompts);
+        return searchedPrompts;
     }
 
     private void logMessage(Prompt prompt, String msg){

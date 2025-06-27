@@ -30,8 +30,8 @@ public class SecurityConfig {
                 .anyRequest().authenticated();
 
         http.formLogin()
-                .loginPage("/login")
-                .defaultSuccessUrl("/home")
+                .loginPage("/api/login")
+                .defaultSuccessUrl("/")
                 .permitAll();
 
         http.logout()

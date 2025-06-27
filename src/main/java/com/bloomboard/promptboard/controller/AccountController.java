@@ -13,10 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 @RequestMapping("/account")
 public class AccountController {
-    @Autowired
-    private final SecurityService securityService;
-    @Autowired
-    private final UserDetailsService userDetailsService;
 
     @GetMapping({"","/options"})
     public String viewAccount (Model model) {

@@ -13,19 +13,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.NoResultException;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/prompts")
+@RequestMapping("/api/prompts")
 public class PromptController {
 
     private static final Logger logger = LoggerFactory.getLogger(PromptController.class);
@@ -38,138 +43,103 @@ public class PromptController {
     @Autowired
     private final UserDetailsService userDetailsService;
 
-
-    @GetMapping("/new") //GET
-    public String createPrompt (Model model) {
-        model.addAttribute("createPromptForm", new PromptRequest());
-        return "createPromptView";
+    @GetMapping("/create")
+    public ResponseEntity<Object> createPrompt() {
+        PromptRequest promptForm = new PromptRequest();
+        return ResponseEntity.ok(promptForm);
     }
-    @PostMapping("/new")
-    public String createPrompt(@ModelAttribute("createPromptForm") @Valid PromptRequest promptRequest, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            logger.info(bindingResult.toString());
-            return "createPromptView";
+    @PostMapping("/create")
+    public ResponseEntity<Object> createPrompt(@RequestBody PromptRequest promptRequest) {
+        try{
+            User user = (User) securityService.getAuthenticatedUser();
+            Prompt createdPrompt = promptService.createPrompt(promptRequest, user.getId());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdPrompt);
+        }  catch (Error e) { //TODO: InvalidPromptException
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid prompt data");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
         }
-
-        User user = (User) userDetailsService.loadUserByUsername(securityService.getAuthenticatedUsername());
-
-        promptService.createPrompt(promptRequest, user.getId());
-
-        return "redirect:/home";
     }
 
-    @PostMapping("/edit")
-    public String updatePrompt (@ModelAttribute("updatePromptForm") @Valid PromptRequest promptRequest, BindingResult bindingResult) {
-        User user = (User) userDetailsService.loadUserByUsername(securityService.getAuthenticatedUsername());
-
-        promptService.updatePrompt(promptRequest, user.getId());
-
-        return "redirect:/home";
-    }
-    @PostMapping("/delete")
-    public String deletePrompt (@ModelAttribute("updatePromptForm") @Valid PromptRequest promptRequest, BindingResult bindingResult) {
-        User user = (User) userDetailsService.loadUserByUsername(securityService.getAuthenticatedUsername());
-
-        promptService.deletePrompt(promptRequest.getId(), user.getId());
-
-        return "redirect:/home";
-    }
-
-    @GetMapping("/browse")
-    public String viewBrowse(Model model) {
-        //I don't know why but this needs to be called first for the readMore modal to not crash the page...
-        User user = (User) userDetailsService.loadUserByUsername(securityService.getAuthenticatedUsername());
-        //get all prompts first
-
-        //TODO: Replace default search / add pagination
-        List<Prompt> allPrompts = promptService.findAllPrompts(); //this is default search
-
-        //also used in /home for my prompts & /browse for the browse method
-        //set summary to 252 characters of content + "..." if summary is empty
-        for (Prompt prompt : allPrompts) {
-            if (prompt.getSummary() == null || prompt.getSummary().equals("")) {
-                String summary = prompt.getContent().length() < 252 ? prompt.getContent() : prompt.getContent().substring(0,252) + "...";
-                prompt.setSummary(summary);
-            }
+    @PutMapping("/update/{promptId}")
+    public ResponseEntity<Object> updatePrompt(@PathVariable Long promptId, @RequestBody PromptRequest promptRequest) {
+        try {
+            User user = (User) securityService.getAuthenticatedUser();
+            Prompt updatedPrompt = promptService.updatePrompt(promptId, promptRequest, user.getId());
+            return ResponseEntity.status(HttpStatus.OK).body(updatedPrompt);
+        } catch (NoResultException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while updating the prompt");
         }
-
-        model.addAttribute("prompts", allPrompts);
-        model.addAttribute("updatePromptForm", new PromptRequest());
-        model.addAttribute("deletePromptForm", new PromptRequest());
-        model.addAttribute("searchPromptForm", new SearchRequest());
-        return "searchView";
     }
 
-    @PostMapping("/browse")
-    public String browse(@ModelAttribute ("searchPromptForm") @Valid SearchRequest searchRequest, BindingResult bindingResult, Model model) {
-        //TODO: Dont know how to set up this post mapping when theres other model attributes
-        //TODO: Fix the filter bar taking up so much room...
-        User user = (User) userDetailsService.loadUserByUsername(securityService.getAuthenticatedUsername());
-
-        List<Prompt> searchedPrompts = new ArrayList<Prompt>();
-
-        //search through database using a phrase
-        List<Prompt> ByPhrase = new ArrayList<Prompt>();
-        if (searchRequest.getPhrase() != null && !searchRequest.getPhrase().isEmpty()) {
-            ByPhrase = promptService.searchByPhrase(searchRequest.getPhrase());
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Prompt>> getPromptsByUser(@PathVariable Long userId) {
+        List<Prompt> prompts = promptService.findByUser_id(userId);
+        if (prompts.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(prompts);
         }
-
-        //search through database using multiple tags
-        List<Prompt> ByTags = new ArrayList<Prompt>();
-        if (searchRequest.getTags() != null && !searchRequest.getTags().isEmpty()) {
-            ByTags = promptService.searchByTags(searchRequest.getTags());
-        }
-
-        //Combine both lists
-        if (ByPhrase.isEmpty() && ByTags.isEmpty()) {
-            //Both searches didn't turn up results
-        } else if (ByPhrase.isEmpty()) {
-            searchedPrompts = ByTags;
-        } else if (ByTags.isEmpty()) {
-            searchedPrompts = ByPhrase;
-        } else {
-            for (Prompt prompt : ByPhrase) {
-                //adds prompt to searchedPrompts only if its on both lists
-                if (ByTags.contains(prompt)) {
-                    searchedPrompts.add(prompt);
-                }
-            }
-        }
-
-        //also used in /home for my prompts & /browse for the viewBrowse method
-        //set summary to 252 characters of content + "..." if summary is empty
-        for (Prompt prompt : searchedPrompts) {
-            if (prompt.getSummary() == null || prompt.getSummary().equals("")) {
-                String summary = prompt.getContent().length() < 252 ? prompt.getContent() : prompt.getContent().substring(0,252) + "...";
-                prompt.setSummary(summary);
-            }
-        }
-
-        //TODO: don't know if necessary? Do I need to re-add the model attributes? I probably need the first one for prompts
-        //combine searches into one list then return
-        model.addAttribute("prompts", searchedPrompts);
-        model.addAttribute("updatePromptForm", new PromptRequest());
-        model.addAttribute("deletePromptForm", new PromptRequest());
-        model.addAttribute("searchPromptForm", searchRequest);
-        return "searchView";
-    }
-    @GetMapping("/myprompts/all")
-    public String viewSearch_MyPrompts(Model model) {
-        User user = (User) userDetailsService.loadUserByUsername(securityService.getAuthenticatedUsername());
-
-        model.addAttribute(
-                "prompts",
-                promptService.findByUser_id(user.getId())
-        );
-
-        return "searchView";
+        return ResponseEntity.ok(prompts);
     }
 
-    //Searching by tags//
-    /*
-    @GetMapping("/{tag}") //TODO: implement tag search on prompts
-    public List<Prompt> getPromptsByTag(@PathVariable String tag) {
-       return promptService.findByTag(tag);
+    @GetMapping("/all")
+    public ResponseEntity<List<Prompt>> getAllPrompts() {
+        List<Prompt> prompts = promptService.findAllPrompts();
+        if (prompts.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(prompts);
+        }
+        return ResponseEntity.ok(prompts);
     }
-     */
+
+    @GetMapping("/{promptId}")
+    public ResponseEntity<Object> getPromptById(@PathVariable Long promptId) {
+        try{
+            Prompt prompt = promptService.getPromptById(promptId);
+            return ResponseEntity.ok(prompt);
+        } catch (NoResultException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<Prompt>> searchPrompts(@RequestBody SearchRequest searchRequest) {
+        List<Prompt> searchedPrompts = promptService.searchPrompts(searchRequest);
+        if (searchedPrompts.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(searchedPrompts);
+        }
+        return ResponseEntity.ok(searchedPrompts);
+    }
+
+    @DeleteMapping("/delete/{promptId}")
+    public ResponseEntity<String> deletePromptById(@PathVariable Long promptId) {
+        try {
+            User user = (User) securityService.getAuthenticatedUser();
+            promptService.deletePrompt(promptId, user.getId());
+            return ResponseEntity.noContent().build();  // 204 No Content - Successful deletion
+        } catch (NoResultException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found
+        } catch (AccessDeniedException e) {
+         return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403 Forbidden
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred");
+        }
+    }
+
+    @DeleteMapping("/delete/user/{userId}")
+    public ResponseEntity<String> deletePromptsByUserId(@PathVariable Long userId) {
+        try {
+            promptService.deletePromptsByUser(userId);
+            return ResponseEntity.noContent().build(); // 204 No Content - Successful deletion
+        } catch (NoResultException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred");
+        }
+    }
 }

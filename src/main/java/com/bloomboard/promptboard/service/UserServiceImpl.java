@@ -21,30 +21,18 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserDetailsService, UserDetailsManager {
-    @Autowired
+public class UserServiceImpl implements UserDetailsManager {
+    private final UserDetailsService userDetailsService;
     private final IUserRepository userRepository;
-    @Autowired
     private final SecurityService securityService;
-    @Autowired
     private final AuthenticationManager authenticationManager;
-    @Autowired
     private final PasswordEncoder passwordEncoder;
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-
+/*
     public List<User> findByUserRole(UserRole userRole) {
         return userRepository.findByUserRole(userRole);
     }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) {
-        //Returns UserDetails but can be cast to User as needed
-        Optional<User> optionalUser = userRepository.findByUsernameIgnoreCase(username);
-        return optionalUser.orElseThrow(() -> new UsernameNotFoundException(
-                String.format("UserDetailsService error: Username [%s] not found", username)
-        ));
-    }
-
+    */
     @Override
     public void createUser(UserDetails user) {
         if(!userExists(user.getUsername())) {
@@ -107,5 +95,11 @@ public class UserServiceImpl implements UserDetailsService, UserDetailsManager {
     @Override
     public boolean userExists(String username) {
         return userRepository.findByUsernameIgnoreCase(username).isPresent();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Delegating to the bean
+        return userDetailsService.loadUserByUsername(username);
     }
 }
